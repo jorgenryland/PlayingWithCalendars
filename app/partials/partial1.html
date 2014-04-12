@@ -1,1 +1,25 @@
-<p>This is the partial for view 1.</p>
+<div>
+    <!--button ng-click="login()">Login</button>
+    <select name="calendar" ng-model="selectedCalendar" ng-options="cal.summary for cal in calendars"></select-->
+    <!--button ng-click="loadCalendars()">Get Calendars</button-->
+    <button ng-click="loadEvents()">Get Calendar Entries</button>
+  </div>
+<!--div class="table-responsive"-->
+<table class="table table-responsive table-bordered table-striped">
+      <thead>
+        <tr>
+          <td></td>
+          <th ng-repeat="summary in calendarSummaries">
+            {{summary}}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="day in dates">
+          <th>{{day.date}}</th>
+          <td ng-repeat="event in day.events track by $index">
+            {{event.summary}}
+          <td/>
+        </tr>
+      </tbody>
+	</table>
+<!--/div-->
