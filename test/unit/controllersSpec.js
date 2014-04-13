@@ -12,7 +12,12 @@ describe('controllers', function(){
     // define the mock service
     beforeEach(function() {
         GoogleCalendarServiceMock = {
-            getAllEvents: function()
+            calendars: [{
+              id : '1234',
+              summary : 'Jørgen',
+              events : [{ start : { date : '2014-04-12'}}]
+            }],
+            loadData: function()
             {
               getAllEventsDeferred = q.defer();
               return getAllEventsDeferred.promise;
@@ -27,38 +32,46 @@ describe('controllers', function(){
     }));
 
     it('should create "datesInMonth" with 31 days', function() {
-      expect(scope.datesInMonth(2014, 3).length).toBe(31);
+      var today = new Date();
+      var expectedNumberOfDates = new Date( today.getFullYear(), today.getMonth() + 1, 0 ).getDate();
+      scope.loadEvents();
+
+      getAllEventsDeferred.resolve();
+      scope.$root.$digest();
+
+      expect(scope.dates.length).toBe(expectedNumberOfDates); 
     });
 
-    it('should create "datesInMonth" with 29 days when februay in leap year', function() {
-      expect(scope.datesInMonth(2016, 2).length).toBe(29);
-    });
-
-    it('should call getAllEvents service method', function () {
-        spyOn(GoogleCalendarServiceMock, 'getAllEvents').andCallThrough();       
+    it('should call loadData service method', function () {
+        spyOn(GoogleCalendarServiceMock, 'loadData').andCallThrough();       
         scope.loadEvents();
 
-        getAllEventsDeferred.resolve([]);
+        getAllEventsDeferred.resolve();
         scope.$root.$digest();
 
-        expect(GoogleCalendarServiceMock.getAllEvents).toHaveBeenCalled();        
+        expect(GoogleCalendarServiceMock.loadData).toHaveBeenCalled();        
     });
 
-    it('should map event to correct date', function () {
-        var startDate = new Date(),
-        calendarsAndEvents = [{
-          id : '1234',
-          summary : 'Jørgen',
-          events : [{ start : { date : '2014-04-12'}}]
-        }];        
-        spyOn(GoogleCalendarServiceMock, 'getAllEvents').andCallThrough();       
+    it('should map event to correct date', function () {          
+        spyOn(GoogleCalendarServiceMock, 'loadData').andCallThrough();       
         scope.loadEvents();
 
-        getAllEventsDeferred.resolve(calendarsAndEvents);
+        getAllEventsDeferred.resolve();
         scope.$root.$digest();
 
         expect(scope.dates).not.toBe([]);
-        expect(scope.dates.length).toBe(12);       
+        expect(scope.dates[11].events.length).toBe(1);       
+    });
+
+    it('should map calendars summary', function () {          
+        spyOn(GoogleCalendarServiceMock, 'loadData').andCallThrough();       
+        scope.loadEvents();
+
+        getAllEventsDeferred.resolve();
+        scope.$root.$digest();
+
+        expect(scope.calendarSummaries.length).toBe(1); 
+        expect(scope.calendarSummaries[0]).toBe('Jørgen');      
     });
   });
 });

@@ -2,13 +2,11 @@
 
 /* Services */
 
-
-// Demonstrate how to register services
-// In this case it is a simple value service.
 angular.module('myApp.services', []).
   value('version', '0.1')
   .service("googleCalendar", function($q) {
-  	this.getAllEvents = function() {
+     var calendars = [];
+     var getAllCalendarsAndEvents = function() {
         var deferred = $q.defer(),
         // get all calendars that the user has on Google Calendar
         getCalendars = function() {          
@@ -18,11 +16,11 @@ angular.module('myApp.services', []).
               request.B.apiVersion = "v3";
               request.execute(function(resp) {
                   if(!resp.error) {
-                    var calendars = [];
+                    //var calendars = [];
                     for(var i = 0; i < resp.items.length; i++) {          
                         calendars.push({'id' : resp.items[i].id, 'summary' : resp.items[i].summary});
                     }
-                    getEvents(calendars);
+                    getEvents();
                   }
                   else {
                     deferred.reject(resp.error);
@@ -30,7 +28,7 @@ angular.module('myApp.services', []).
               });
           });
         },
-        getEvents = function(calendars) {
+        getEvents = function() {
           var numberOfMissingResponses = calendars.length;
 
           for(var i = 0; i < calendars.length; i++) {
@@ -55,7 +53,7 @@ angular.module('myApp.services', []).
                     deferred.reject(resp.error);
                   }
                   if (numberOfMissingResponses === 0) {
-                    deferred.resolve(calendars);
+                    deferred.resolve();
                   }
               });
             })(i);
@@ -63,11 +61,16 @@ angular.module('myApp.services', []).
         };
         // login to google API before making calls
         gapi.auth.authorize({ 
-              client_id: '',
+              client_id: '494604444883-iau7ktv29n9u0tvk55rs60shj0d7i6kq.apps.googleusercontent.com',
               scope: ["https://www.googleapis.com/auth/calendar"], 
               immediate: true, 
         }, getCalendars);
 
         return deferred.promise;
+    };
+
+    return {
+      loadData : getAllCalendarsAndEvents,
+      calendars : calendars
     };
  });
