@@ -18,9 +18,13 @@
     <tbody>
       <tr ng-repeat="day in dates">
         <th>{{day.date}}</th>
-        <td ng-repeat="event in day.events track by $index">
-          {{event.summary}}
-        <td/>
+        <td ng-repeat="eventlist in day.events track by $index">  
+          <ul>
+            <li ng-repeat="event in eventlist track by $index">  
+              {{event.summary}}
+            </li>
+          </ul>
+        </td>
       </tr>
     </tbody>
 </table>

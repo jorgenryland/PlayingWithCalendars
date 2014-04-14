@@ -15,7 +15,14 @@ describe('controllers', function(){
             calendars: [{
               id : '1234',
               summary : 'Jørgen',
-              events : [{ start : { date : '2014-04-12'}}]
+              events : [{ start : { date : '2014-04-12'}, end: { date : '2014-04-13'}, summary : "Single event"}, 
+                { start : { date : '2014-04-20'}, end : { date : '2014-04-22'}, summary : "Two day event"}]
+            },
+            {
+              id : '1111',
+              summary : 'Laila',
+              events : [{ start : { date : '2014-04-13'}, end : { date : '2014-04-14'}, summary : 'The event' }, 
+                { start : { date : '2014-04-13'}, end : { date : '2014-04-14'}, summary : 'Another event' }]
             }],
             loadData: function()
             {
@@ -31,7 +38,7 @@ describe('controllers', function(){
       ctrl = $controller('CalendarCtrl', {$scope: scope, googleCalendar : GoogleCalendarServiceMock});
     }));
 
-    it('should create "datesInMonth" with 31 days', function() {
+    it('should create "dates" with correct number of days', function() {
       var today = new Date();
       var expectedNumberOfDates = new Date( today.getFullYear(), today.getMonth() + 1, 0 ).getDate();
       scope.loadEvents();
@@ -53,24 +60,43 @@ describe('controllers', function(){
     });
 
     it('should map event to correct date', function () {          
-        spyOn(GoogleCalendarServiceMock, 'loadData').andCallThrough();       
         scope.loadEvents();
 
         getAllEventsDeferred.resolve();
         scope.$root.$digest();
 
         expect(scope.dates).not.toBe([]);
-        expect(scope.dates[11].events.length).toBe(1);       
+        expect(scope.dates[11].events.length).toBe(2);
+        expect(scope.dates[11].events[0].length).toBe(1);       
     });
 
-    it('should map calendars summary', function () {          
-        spyOn(GoogleCalendarServiceMock, 'loadData').andCallThrough();       
+    it('should map multiple events to same date', function () {          
         scope.loadEvents();
 
         getAllEventsDeferred.resolve();
         scope.$root.$digest();
 
-        expect(scope.calendarSummaries.length).toBe(1); 
+        expect(scope.dates).not.toBe([]);
+        expect(scope.dates[12].events[1].length).toBe(2);       
+    });
+
+    it('should map a two day event over two dates', function () {          
+        scope.loadEvents();
+
+        getAllEventsDeferred.resolve();
+        scope.$root.$digest();
+
+        expect(scope.dates[19].events[0].length).toBe(1);   
+        expect(scope.dates[20].events[0].length).toBe(1);       
+    });
+
+    it('should map calendars summary', function () {                
+        scope.loadEvents();
+
+        getAllEventsDeferred.resolve();
+        scope.$root.$digest();
+
+        expect(scope.calendarSummaries.length).toBe(2); 
         expect(scope.calendarSummaries[0]).toBe('Jørgen');      
     });
   });

@@ -25,10 +25,13 @@ angular.module('myApp.controllers', [])
         var lastDayInMonth = new Date( $scope.year, $scope.month + 1, 0 );
         var dates = [];
         var i = 0;
+        var j = 0;
         for (i; i < lastDayInMonth.getDate(); i++) {
-          var eventsArray = [];
-          eventsArray[numberOfCalendars - 2] = '';
-          dates[i] = { 'date' : i + 1, 'events' : eventsArray};
+          dates[i] = { 'date' : i + 1, 'events' : []};
+          for (j = 0; j < numberOfCalendars; j++) {
+            dates[i].events.push([]);
+          }          
+          
         }
         return dates;
       },
@@ -42,8 +45,11 @@ angular.module('myApp.controllers', [])
         }); 
       },
       addEventToDatesAndEventsMap = function(event, calendarIndex) {
-        var date = new Date(event.start.date).getDate();
-        $scope.dates[date - 1].events[calendarIndex] = event;
+        var i = new Date(event.start.date).getDate();
+        var endDate = new Date(event.end.date).getDate();
+        for (i; i < endDate; i++) {
+          $scope.dates[i - 1].events[calendarIndex].push(event);
+        }
       };
 
       $scope.month = today.getMonth();
