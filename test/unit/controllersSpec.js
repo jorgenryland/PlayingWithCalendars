@@ -49,6 +49,36 @@ describe('controllers', function(){
       expect(scope.dates.length).toBe(expectedNumberOfDates); 
     });
 
+    it('should increment year when incrementing month number 12', function() {
+      scope.loadEvents();
+      getAllEventsDeferred.resolve();
+      scope.$root.$digest();
+
+      var currentMonth = scope.month,
+      currentYear = scope.year, i;
+      
+      for (i = currentMonth; i < 12; i++) {
+        scope.incrementMonth();
+      }
+      expect(scope.month).toBe(0); 
+      expect(scope.year).toBe(currentYear + 1); 
+    });
+
+    it('should decrement year when decrementing month number 1', function() {
+      scope.loadEvents();
+      getAllEventsDeferred.resolve();
+      scope.$root.$digest();
+
+      var currentMonth = scope.month,
+      currentYear = scope.year, i;
+      
+      for (i = currentMonth; i >= 0; i--) {
+        scope.decrementMonth();
+      }
+      expect(scope.month).toBe(11); 
+      expect(scope.year).toBe(currentYear - 1); 
+    });
+
     it('should call loadData service method', function () {
         spyOn(GoogleCalendarServiceMock, 'loadData').andCallThrough();       
         scope.loadEvents();

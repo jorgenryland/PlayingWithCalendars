@@ -10,7 +10,7 @@
 <table class="table table-responsive table-bordered">
     <thead>
       <tr>
-        <td><h3>{{month | nameOfMonth}}</h3></td>
+        <td><h3>{{month | nameOfMonth}} {{year}}</h3></td>
         <th ng-repeat="summary in calendarSummaries">
           {{summary}}</th>
       </tr>
@@ -19,11 +19,9 @@
       <tr ng-repeat="day in dates track by $index">
         <th>{{day.date}}</th>
         <td ng-style="{background: getBgColor($index, day.date - 1)}" ng-repeat="eventlist in day.events track by $index">  
-          <ul>
-            <li ng-repeat="event in eventlist track by $index">  
-              {{event.summary}}
-            </li>
-          </ul>
+          <p ng-repeat="event in eventlist track by $index">  
+            {{event.start.dateTime | eventStart}}{{event.end.dateTime | eventEnd}}{{event.summary}}
+          </p>
         </td>
       </tr>
     </tbody>

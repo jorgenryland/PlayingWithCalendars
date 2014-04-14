@@ -15,8 +15,14 @@ angular.module('myApp.controllers', [])
         return true;
       },
       isValidMonth = function(event) {
-        var month = new Date(event.start.date).getMonth();
-        return month === $scope.month;
+        var date;
+        if (event.start.date) {
+          date = new Date(event.start.date);
+        }
+        else {
+          date = new Date(event.start.dateTime);
+        } 
+        return date.getMonth() === $scope.month && date.getFullYear() === $scope.year;
       },
       getCalendarSummary = function(calendar) {
         return calendar.summary;
@@ -43,6 +49,11 @@ angular.module('myApp.controllers', [])
         }); 
       },
       addEventToDatesAndEventsMap = function(event, calendarIndex) {
+        var startDate;
+        if (event.start.dateTime) {
+          $scope.dates[new Date(event.start.dateTime).getDate() - 1].events[calendarIndex].push(event);
+          return;
+        }
         var i = new Date(event.start.date).getDate();
         var endDate = new Date(event.end.date).getDate();
         for (i; i < endDate; i++) {
@@ -51,7 +62,7 @@ angular.module('myApp.controllers', [])
       };
 
       $scope.month = today.getMonth();
-      $scope.year = today.getYear();
+      $scope.year = today.getFullYear();
 
       $scope.loadEvents = function() {
         googleCalendar.loadData().then(function() {
@@ -67,12 +78,24 @@ angular.module('myApp.controllers', [])
       }
 
       $scope.incrementMonth = function() {
-        $scope.month += 1;
+        if ($scope.month === 11) {
+          $scope.month = 0;
+          $scope.year+= 1;          
+        }
+        else {
+          $scope.month += 1;
+        }
         refreshDatesAndEventsMap();
       }
 
       $scope.decrementMonth = function() {
-        $scope.month -= 1;
+        if ($scope.month === 0) {
+          $scope.month = 11;
+          $scope.year -= 1;          
+        }
+        else {
+          $scope.month -= 1;
+        }        
         refreshDatesAndEventsMap();
       }
 
