@@ -7,7 +7,7 @@
   <li class="next"><a href="" ng-click="incrementMonth()">Neste &rarr;</a></li>
 </ul>
 <!--div class="table-responsive"-->
-<table class="table table-responsive table-bordered table-striped">
+<table class="table table-responsive table-bordered">
     <thead>
       <tr>
         <td><h3>{{month | nameOfMonth}}</h3></td>
@@ -16,9 +16,9 @@
       </tr>
     </thead>
     <tbody>
-      <tr ng-repeat="day in dates">
+      <tr ng-repeat="day in dates track by $index">
         <th>{{day.date}}</th>
-        <td ng-repeat="eventlist in day.events track by $index">  
+        <td ng-style="{background: getBgColor($index, day.date - 1)}" ng-repeat="eventlist in day.events track by $index">  
           <ul>
             <li ng-repeat="event in eventlist track by $index">  
               {{event.summary}}

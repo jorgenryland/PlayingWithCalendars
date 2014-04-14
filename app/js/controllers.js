@@ -21,22 +21,20 @@ angular.module('myApp.controllers', [])
       getCalendarSummary = function(calendar) {
         return calendar.summary;
       },
-      createDatesAndEventsMap = function(numberOfCalendars) {
+      createDatesAndEventsMap = function(calendars) {
         var lastDayInMonth = new Date( $scope.year, $scope.month + 1, 0 );
         var dates = [];
-        var i = 0;
-        var j = 0;
-        for (i; i < lastDayInMonth.getDate(); i++) {
+        var i, j;
+        for (i = 0; i < lastDayInMonth.getDate(); i++) {
           dates[i] = { 'date' : i + 1, 'events' : []};
-          for (j = 0; j < numberOfCalendars; j++) {
+          for (j = 0; j < calendars.length; j++) {
             dates[i].events.push([]);
-          }          
-          
+          }                   
         }
         return dates;
       },
       refreshDatesAndEventsMap = function() {
-        $scope.dates = createDatesAndEventsMap($scope.calendarsWithEvents.length);
+        $scope.dates = createDatesAndEventsMap($scope.calendarsWithEvents);
 
         $scope.calendarsWithEvents.forEach(function(calendar, calendarIndex) {
           calendar.events.filter(isValidMonth).forEach(function(event) {
@@ -62,6 +60,10 @@ angular.module('myApp.controllers', [])
           $scope.calendarSummaries = $scope.calendarsWithEvents.map(getCalendarSummary);
           refreshDatesAndEventsMap();          
         });
+      }
+
+      $scope.getBgColor = function(calendarIndex, dateIndex) {
+        return $scope.dates[dateIndex].events[calendarIndex].length > 0 ? $scope.calendarsWithEvents[calendarIndex].color : '';
       }
 
       $scope.incrementMonth = function() {

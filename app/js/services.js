@@ -18,7 +18,7 @@ angular.module('myApp.services', []).
                   if(!resp.error) {
                     //var calendars = [];
                     for(var i = 0; i < resp.items.length; i++) {          
-                        calendars.push({'id' : resp.items[i].id, 'summary' : resp.items[i].summary});
+                        calendars.push({'id' : resp.items[i].id, 'summary' : resp.items[i].summary, 'color' : resp.items[i].backgroundColor});
                     }
                     getEvents();
                   }
