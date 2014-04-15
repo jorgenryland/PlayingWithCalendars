@@ -2,8 +2,8 @@
 
 /* Controllers */
 
-angular.module('myApp.controllers', [])
-  .controller('CalendarCtrl', ['$scope', 'googleCalendar', function ($scope, googleCalendar) {
+angular.module('myApp.controllers', []).
+  controller('CalendarCtrl', ['$scope', '$location', 'googleCalendar', function ($scope, $location, googleCalendar) {
       var today = new Date(),               
       isFamilyCalendar = function(calendar) {
         // TODO: Lag regexp
@@ -99,5 +99,12 @@ angular.module('myApp.controllers', [])
         refreshDatesAndEventsMap();
       }
 
-      $scope.loadEvents();
+      $scope.go = function ( calendarIndex, year, month, day ) {
+        $location.path( '/view2' );
+      }
+
+      //$scope.loadEvents();
+  }]).
+  controller('AddEventCtrl', ['$scope', 'googleCalendar', function($scope, googleCalendar) {
+
   }]);
