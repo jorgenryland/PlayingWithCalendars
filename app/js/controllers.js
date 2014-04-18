@@ -27,6 +27,9 @@ angular.module('myApp.controllers', []).
       getCalendarSummary = function(calendar) {
         return calendar.summary;
       },
+      getCalendarId = function(calendar) {
+        return calendar.id;
+      },
       createDatesAndEventsMap = function(calendars) {
         var lastDayInMonth = new Date( $scope.year, $scope.month + 1, 0 );
         var dates = [];
@@ -69,6 +72,7 @@ angular.module('myApp.controllers', []).
           $scope.calendarsWithEvents = googleCalendar.calendars.filter(isFamilyCalendar);
 
           $scope.calendarSummaries = $scope.calendarsWithEvents.map(getCalendarSummary);
+          $scope.calendarIds = $scope.calendarsWithEvents.map(getCalendarId);
           refreshDatesAndEventsMap();          
         });
       }
@@ -99,12 +103,41 @@ angular.module('myApp.controllers', []).
         refreshDatesAndEventsMap();
       }
 
-      $scope.go = function ( calendarIndex, year, month, day ) {
-        $location.path( '/view2' );
+      $scope.createEvent = function ( calendarIndex, year, month, day ) {        
+        $location.path( '/view2/' + $scope.calendarIds[calendarIndex] + '/' + year + '/' + month + '/' + day);
       }
 
       //$scope.loadEvents();
   }]).
-  controller('AddEventCtrl', ['$scope', 'googleCalendar', function($scope, googleCalendar) {
+  controller('AddEventCtrl', ['$scope', '$location', '$routeParams', 'googleCalendar', function($scope, $location, $routeParams, googleCalendar) {
+    var startTime, endTime, isFulldayEvent;
+    var year = parseInt($routeParams.year),
+    month = parseInt($routeParams.month),
+    day = parseInt($routeParams.day);
 
+    $scope.saveEvent = function () {
+      if ($scope.selectedStartTime && $scope.selectedEndTime) {
+        startTime = new Date($scope.selectedStartTime);
+        endTime = new Date($scope.selectedEndTime);
+        startTime.setYear(year);
+        startTime.setMonth(month);
+        startTime.setDate(day);
+        endTime.setYear(year);
+        endTime.setMonth(month);
+        endTime.setDate(day);
+        isFulldayEvent = false;
+      }   
+      else {
+        startTime = new Date(Date.UTC(year, month, day));
+        endTime  = new Date(Date.UTC(year, month, day + 1));
+        isFulldayEvent = true;
+      }   
+      googleCalendar.saveEvent($routeParams.calendarId, startTime, endTime, $scope.title, isFulldayEvent).then(function() {
+        $location.path( '/view1' );        
+      });          
+    }
+
+    $scope.cancel = function() {
+      $location.path( '/view1' ); 
+    }
   }]);

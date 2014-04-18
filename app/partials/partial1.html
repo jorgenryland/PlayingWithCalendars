@@ -1,7 +1,4 @@
 <!--div ng-init="loadEvents()"></div-->
-<div>
-  <button ng-click="loadEvents()">Get Calendar Entries</button>
-</div>
 <ul class="pager">
   <li class="previous"><a href="" ng-click="decrementMonth()">&larr; Forrige</a></li>
   <li class="next"><a href="" ng-click="incrementMonth()">Neste &rarr;</a></li>
@@ -18,7 +15,7 @@
     <tbody>
       <tr ng-repeat="day in dates track by $index">
         <th>{{day.date}}</th>
-        <td ng-click="go($index, year, month, day.date)" ng-style="{background: getBgColor($index, day.date - 1)}" ng-repeat="eventlist in day.events track by $index">         
+        <td ng-click="createEvent($index, year, month, day.date)" ng-style="{background: getBgColor($index, day.date - 1)}" ng-repeat="eventlist in day.events track by $index">         
           <p ng-repeat="event in eventlist track by $index">  
             {{event.start.dateTime | eventStart}}{{event.end.dateTime | eventEnd}}{{event.summary}}
           </p>
@@ -26,3 +23,6 @@
       </tr>
     </tbody>
 </table>
+<div>
+  <button ng-click="loadEvents()">Get Calendar Entries</button>
+</div>

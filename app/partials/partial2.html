@@ -1,5 +1,13 @@
-<p>This is the partial for view 2.</p>
-<p>
-  Showing of 'interpolate' filter:
-  {{ 'Current version is v%VERSION%.' | interpolate }}
-</p>
+<label class="control-label">Tittel</label>
+<input type="text" ng-model="title" name="Tittel"/>
+<form name="timepickerForm" class="form-inline" role="form">
+	<div class="form-group" ng-class="{'has-error': timepickerForm.time2.$invalid}">
+		<label class="control-label"><i class="fa fa-clock-o"></i> Start</label>
+		<input type="text" class="form-control" size="5" ng-model="selectedStartTime" data-time-format="HH:mm" data-time-type="number" data-min-time="00:00" data-max-time="23:59" data-autoclose="1" name="time2" bs-timepicker>
+	</div>
+	<div class="form-group" ng-class="{'has-error': timepickerForm.time2.$invalid}">
+		<label class="control-label"><i class="fa fa-clock-o"></i> Slutt</label>
+		<input type="text" class="form-control" size="5" ng-model="selectedEndTime" data-time-format="HH:mm" data-time-type="number" data-min-time="00:00" data-max-time="23:59" data-autoclose="1" name="time2" bs-timepicker>
+	</div>
+</form>
+<button ng-click="saveEvent()">Lagre</button><button ng-click="cancel()">Avbryt</button>

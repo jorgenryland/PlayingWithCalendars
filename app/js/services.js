@@ -5,13 +5,13 @@
 angular.module('myApp.services', []).
   value('version', '0.1')
   .service("googleCalendar", function($q) {
-     var calendars = [];
-     var getAllCalendarsAndEvents = function() {
+     var calendars = [],
+     getAllCalendarsAndEvents = function() {
+        calendars.length = 0;
         var deferred = $q.defer(),
         // get all calendars that the user has on Google Calendar
         getCalendars = function() {          
           gapi.client.load('calendar','v3', function() {
-              var stringWithSpacePattern = new RegExp("\\s");
               var request = gapi.client.calendar.calendarList.list({});
               request.B.apiVersion = "v3";
               request.execute(function(resp) {
@@ -59,18 +59,45 @@ angular.module('myApp.services', []).
             })(i);
           } 
         };
-        // login to google API before making calls
+        // login to google API before making calls    
         gapi.auth.authorize({ 
-              client_id: '',
+              client_id: '494604444883-iau7ktv29n9u0tvk55rs60shj0d7i6kq.apps.googleusercontent.com',
               scope: ["https://www.googleapis.com/auth/calendar"], 
               immediate: true, 
         }, getCalendars);
 
         return deferred.promise;
+    },
+    saveEvent = function(calendarId, startTime, endTime, title, isFulldayEvent) {
+      var deferred = $q.defer(),
+      formatDate = function(date) {
+        return date.toISOString().slice(0,10);
+      },
+      formatDateTime = function(date) {
+        return date.toISOString();
+      };
+      gapi.client.load('calendar','v3', function() {
+        var resource = {
+          "summary": title
+        };
+        resource.start = isFulldayEvent ? {"date" : formatDate(startTime)} : {"dateTime" : formatDateTime(startTime)};
+        resource.end = isFulldayEvent ? {"date" : formatDate(endTime)} : {"dateTime" : formatDateTime(endTime)};
+
+        var request = gapi.client.calendar.events.insert({
+          'calendarId': calendarId,
+          'resource': resource
+        });
+        request.execute(function(resp) {
+          deferred.resolve();
+          console.log(resp);
+        });       
+      });
+      return deferred.promise;
     };
 
     return {
       loadData : getAllCalendarsAndEvents,
+      saveEvent : saveEvent,
       calendars : calendars
     };
  });
