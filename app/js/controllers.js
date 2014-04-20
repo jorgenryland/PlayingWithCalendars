@@ -3,7 +3,7 @@
 /* Controllers */
 
 angular.module('myApp.controllers', []).
-  controller('CalendarCtrl', ['$scope', '$location', 'googleCalendar', function ($scope, $location, googleCalendar) {
+  controller('CalendarCtrl', ['$scope', '$route', 'googleCalendar', function ($scope, $route, googleCalendar) {
       var today = new Date(),               
       isFamilyCalendar = function(calendar) {
         // TODO: Lag regexp
@@ -103,12 +103,36 @@ angular.module('myApp.controllers', []).
         refreshDatesAndEventsMap();
       }
 
-      $scope.createEvent = function ( calendarIndex, year, month, day ) {        
-        $location.path( '/view2/' + $scope.calendarIds[calendarIndex] + '/' + year + '/' + month + '/' + day);
+      $scope.setSelected = function ( calendarIndex, year, month, day ) {  
+        $scope.selectedCalendar = { 'id' : $scope.calendarIds[calendarIndex], 'summary' : $scope.calendarSummaries[calendarIndex]};
+        $scope.selectedDay = day;      
       }
 
+      $scope.saveEvent = function () {
+        var startTime, endTime, isFulldayEvent;
+        if (this.selectedStartTime && this.selectedEndTime) {
+          startTime = new Date(this.selectedStartTime);
+          endTime = new Date(this.selectedEndTime);
+          startTime.setYear($scope.year);
+          startTime.setMonth($scope.month);
+          startTime.setDate($scope.selectedDay);
+          endTime.setYear($scope.year);
+          endTime.setMonth($scope.month);
+          endTime.setDate($scope.selectedDay);
+          isFulldayEvent = false;
+        }   
+        else {
+          startTime = new Date(Date.UTC($scope.year, $scope.month, $scope.selectedDay));
+          endTime  = new Date(Date.UTC($scope.year, $scope.month, $scope.selectedDay + 1));
+          isFulldayEvent = true;
+        }
+        this.$hide();
+        googleCalendar.saveEvent($scope.selectedCalendar.id, startTime, endTime, this.title, isFulldayEvent).then(function() {
+          $route.reload();        
+        });      
+      }
       //$scope.loadEvents();
-  }]).
+  }])/*.
   controller('AddEventCtrl', ['$scope', '$location', '$routeParams', 'googleCalendar', function($scope, $location, $routeParams, googleCalendar) {
     var startTime, endTime, isFulldayEvent;
     var year = parseInt($routeParams.year),
@@ -140,4 +164,4 @@ angular.module('myApp.controllers', []).
     $scope.cancel = function() {
       $location.path( '/view1' ); 
     }
-  }]);
+  }])*/;

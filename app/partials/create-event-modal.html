@@ -1,0 +1,28 @@
+<div class="modal ng-scope top am-fade-and-slide-top" tabindex="-1" role="dialog" style="display: block;">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header" ng-show="month"> 
+				<button type="button" class="close" ng-click="$hide()">×</button>
+				<h4 class="modal-title ng-binding">{{selectedDay}}.{{month | nameOfMonth}} {{year}}, {{selectedCalendar.summary}}</h4>
+			</div>
+			<div class="modal-body" ng-show="year">
+				<p><label class="control-label">Kva skjer</label>
+				<input type="text" ng-model="title" name="Tittel"/></p>
+				<p><form name="timepickerForm" class="form-inline" role="form">
+					<div class="form-group" ng-class="{'has-error': timepickerForm.time2.$invalid}">
+						<label class="control-label"><i class="fa fa-clock-o"></i> Start</label>
+						<input type="text" class="form-control" size="5" ng-model="selectedStartTime" data-time-format="HH:mm" data-time-type="number" data-min-time="00:00" data-max-time="23:59" data-autoclose="1" name="time2" bs-timepicker>
+					</div>
+					<div class="form-group" ng-class="{'has-error': timepickerForm.time2.$invalid}">
+						<label class="control-label"><i class="fa fa-clock-o"></i> Slutt</label>
+						<input type="text" class="form-control" size="5" ng-model="selectedEndTime" data-time-format="HH:mm" data-time-type="number" data-min-time="00:00" data-max-time="23:59" data-autoclose="1" name="time2" bs-timepicker>
+					</div>
+				</form></p>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" ng-click="$hide()">Avbryt</button>
+				<button type="button" class="btn btn-primary" ng-click="saveEvent()">Lagre</button>
+			</div>
+		</div>
+	</div>
+</div>

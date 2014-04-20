@@ -15,7 +15,8 @@
     <tbody>
       <tr ng-repeat="day in dates track by $index">
         <th>{{day.date}}</th>
-        <td ng-click="createEvent($index, year, month, day.date)" ng-style="{background: getBgColor($index, day.date - 1)}" ng-repeat="eventlist in day.events track by $index">         
+        <!--td ng-click="createEvent($index, year, month, day.date)" ng-style="{background: getBgColor($index, day.date - 1)}" ng-repeat="eventlist in day.events track by $index"-->  
+         <td ng-click="setSelected($index, year, month, day.date)" ng-style="{background: getBgColor($index, day.date - 1)}" ng-repeat="eventlist in day.events track by $index" data-animation="am-fade-and-slide-top" data-template="partials/create-event-modal.html" bs-modal="modal" >       
           <p ng-repeat="event in eventlist track by $index">  
             {{event.start.dateTime | eventStart}}{{event.end.dateTime | eventEnd}}{{event.summary}}
           </p>
