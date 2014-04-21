@@ -3,7 +3,7 @@
 /* Controllers */
 
 angular.module('myApp.controllers', []).
-  controller('CalendarCtrl', ['$scope', '$route', 'googleCalendar', function ($scope, $route, googleCalendar) {
+  controller('CalendarCtrl', ['$scope', 'googleCalendar', function ($scope, googleCalendar) {
       var today = new Date(),               
       isFamilyCalendar = function(calendar) {
         // TODO: Lag regexp
@@ -128,40 +128,8 @@ angular.module('myApp.controllers', []).
         }
         this.$hide();
         googleCalendar.saveEvent($scope.selectedCalendar.id, startTime, endTime, this.title, isFulldayEvent).then(function() {
-          $route.reload();        
+          $scope.loadEvents();//$route.reload();        
         });      
       }
       //$scope.loadEvents();
-  }])/*.
-  controller('AddEventCtrl', ['$scope', '$location', '$routeParams', 'googleCalendar', function($scope, $location, $routeParams, googleCalendar) {
-    var startTime, endTime, isFulldayEvent;
-    var year = parseInt($routeParams.year),
-    month = parseInt($routeParams.month),
-    day = parseInt($routeParams.day);
-
-    $scope.saveEvent = function () {
-      if ($scope.selectedStartTime && $scope.selectedEndTime) {
-        startTime = new Date($scope.selectedStartTime);
-        endTime = new Date($scope.selectedEndTime);
-        startTime.setYear(year);
-        startTime.setMonth(month);
-        startTime.setDate(day);
-        endTime.setYear(year);
-        endTime.setMonth(month);
-        endTime.setDate(day);
-        isFulldayEvent = false;
-      }   
-      else {
-        startTime = new Date(Date.UTC(year, month, day));
-        endTime  = new Date(Date.UTC(year, month, day + 1));
-        isFulldayEvent = true;
-      }   
-      googleCalendar.saveEvent($routeParams.calendarId, startTime, endTime, $scope.title, isFulldayEvent).then(function() {
-        $location.path( '/view1' );        
-      });          
-    }
-
-    $scope.cancel = function() {
-      $location.path( '/view1' ); 
-    }
-  }])*/;
+  }]);
