@@ -61,7 +61,7 @@ angular.module('myApp.services', []).
         };
         // login to google API before making calls    
         gapi.auth.authorize({ 
-              client_id: '494604444883-iau7ktv29n9u0tvk55rs60shj0d7i6kq.apps.googleusercontent.com',
+              client_id: '',
               scope: ["https://www.googleapis.com/auth/calendar"], 
               immediate: true, 
         }, getCalendars);
