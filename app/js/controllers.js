@@ -51,15 +51,16 @@ angular.module('myApp.controllers', []).
           })
         }); 
       },
-      addEventToDatesAndEventsMap = function(event, calendarIndex) {
-        var startDate;
+      addEventToDatesAndEventsMap = function(event, calendarIndex) {      
+        var startDate, i;
         if (event.start.dateTime) {
           $scope.dates[new Date(event.start.dateTime).getDate() - 1].events[calendarIndex].push(event);
           return;
         }
-        var i = new Date(event.start.date).getDate();
-        var endDate = new Date(event.end.date).getDate();
-        for (i; i < endDate; i++) {
+        startDate = new Date(event.start.date);
+        var timespanInMS = new Date(event.end.date) - startDate;
+        var endDay = startDate.getDate() + timespanInMS/(1000 * 60 * 60 * 24);
+        for (i = startDate.getDate() ; i < Math.min(endDay, $scope.dates.length + 1); i++) {
           $scope.dates[i - 1].events[calendarIndex].push(event);
         }
       };
@@ -77,8 +78,12 @@ angular.module('myApp.controllers', []).
         });
       }
 
-      $scope.getBgColor = function(calendarIndex, dateIndex) {
+      $scope.showCalendarColor = function(calendarIndex, dateIndex) {
         return $scope.dates[dateIndex].events[calendarIndex].length > 0 ? $scope.calendarsWithEvents[calendarIndex].color : '';
+      }
+
+      $scope.getCalendarColor = function(calendarIndex) {
+        return $scope.calendarsWithEvents[calendarIndex].color;
       }
 
       $scope.incrementMonth = function() {
@@ -104,7 +109,7 @@ angular.module('myApp.controllers', []).
       }
 
       $scope.setSelected = function ( calendarIndex, year, month, day ) {  
-        $scope.selectedCalendar = { 'id' : $scope.calendarIds[calendarIndex], 'summary' : $scope.calendarSummaries[calendarIndex]};
+        $scope.selectedCalendar = { 'index' : calendarIndex, 'id' : $scope.calendarIds[calendarIndex], 'summary' : $scope.calendarSummaries[calendarIndex]};
         $scope.selectedDay = day;      
       }
 
@@ -128,8 +133,18 @@ angular.module('myApp.controllers', []).
         }
         this.$hide();
         googleCalendar.saveEvent($scope.selectedCalendar.id, startTime, endTime, this.title, isFulldayEvent).then(function() {
-          $scope.loadEvents();//$route.reload();        
+          $scope.loadEvents();        
         });      
+      }
+
+      $scope.hasEvents = function () {  
+        return $scope.dates[$scope.selectedDay - 1].events[$scope.selectedCalendar.index].length > 0;     
+      }
+
+      $scope.deleteEvent = function ( eventId ) {  
+        googleCalendar.deleteEvent($scope.selectedCalendar.id, eventId).then(function() {
+          $scope.loadEvents();        
+        });           
       }
       //$scope.loadEvents();
   }]);

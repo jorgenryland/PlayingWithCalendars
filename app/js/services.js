@@ -93,11 +93,27 @@ angular.module('myApp.services', []).
         });       
       });
       return deferred.promise;
+    },
+    deleteEvent = function(calendarId, eventId) {
+      var deferred = $q.defer();
+      
+      gapi.client.load('calendar','v3', function() {
+        var request = gapi.client.calendar.events.delete({
+          'calendarId': calendarId,
+          'eventId': eventId
+        });
+        request.execute(function(resp) {
+          deferred.resolve();
+          console.log(resp);
+        });       
+      });
+      return deferred.promise;
     };
 
     return {
       loadData : getAllCalendarsAndEvents,
       saveEvent : saveEvent,
+      deleteEvent : deleteEvent,
       calendars : calendars
     };
  });
