@@ -114,7 +114,7 @@ angular.module('myApp.controllers', []).
       }
 
       $scope.saveEvent = function () {
-        var startTime, endTime, isFulldayEvent;
+        var startTime, endTime, isFulldayEvent, title;
         if (this.selectedStartTime && this.selectedEndTime) {
           startTime = new Date(this.selectedStartTime);
           endTime = new Date(this.selectedEndTime);
@@ -131,8 +131,11 @@ angular.module('myApp.controllers', []).
           endTime  = new Date(Date.UTC($scope.year, $scope.month, $scope.selectedDay + 1));
           isFulldayEvent = true;
         }
+        title = this.title.slice(0);
+        this.title = this.selectedStartTime = this.selectedEndTime = null;
         this.$hide();
-        googleCalendar.saveEvent($scope.selectedCalendar.id, startTime, endTime, this.title, isFulldayEvent).then(function() {
+
+        googleCalendar.saveEvent($scope.selectedCalendar.id, startTime, endTime, title, isFulldayEvent).then(function() {
           $scope.loadEvents();        
         });      
       }
