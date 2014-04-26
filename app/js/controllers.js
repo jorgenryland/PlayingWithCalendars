@@ -129,7 +129,10 @@ angular.module('myApp.controllers', []).
           startTime.setDate($scope.selectedDay);
           endTime.setYear($scope.year);
           endTime.setMonth($scope.month);
-          endTime.setDate($scope.selectedDay);
+          endTime.setDate($scope.selectedDay);          
+          if(endTime.getHours() === 0 && endTime.getMinutes() === 0) {
+            endTime.setDate(endTime.getDate() + 1);
+          }
           isFulldayEvent = false;
         }   
         else {
