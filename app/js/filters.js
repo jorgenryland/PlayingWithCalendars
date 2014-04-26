@@ -14,6 +14,12 @@ angular.module('myApp.filters', []).
   		return monthNames[input];
   	};
   }).
+  filter('nameOfDay', function() {
+    var dayNames = ['Søndag', 'Måndag', 'Tysdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lørdag'];
+    return function(input) {
+      return dayNames[input];
+    };
+  }).
   filter('eventStart', function() {
   	return function(input) {
   		if(input) {

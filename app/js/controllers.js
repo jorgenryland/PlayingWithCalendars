@@ -35,7 +35,7 @@ angular.module('myApp.controllers', []).
         var dates = [];
         var i, j;
         for (i = 0; i < lastDayInMonth.getDate(); i++) {
-          dates[i] = { 'date' : i + 1, 'events' : []};
+          dates[i] = { 'date' : i + 1, 'weekday' : new Date( $scope.year, $scope.month, i + 1).getDay(), 'events' : []};
           for (j = 0; j < calendars.length; j++) {
             dates[i].events.push([]);
           }                   

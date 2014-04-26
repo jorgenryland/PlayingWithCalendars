@@ -14,7 +14,7 @@
     </thead>
     <tbody>
       <tr ng-repeat="day in dates track by $index">
-        <th>{{day.date}}</th>  
+        <th>{{day.date}}. {{day.weekday | nameOfDay}}</th>  
          <td ng-click="setSelected($index, year, month, day.date)" ng-style="{background: showCalendarColor($index, day.date - 1)}" ng-repeat="eventlist in day.events track by $index" data-animation="am-fade-and-slide-top" data-template="partials/create-event-modal.html" bs-modal="modal" >       
           <p ng-repeat="event in eventlist track by $index">  
             {{event.start.dateTime | eventStart}}{{event.end.dateTime | eventEnd}}{{event.summary}}
