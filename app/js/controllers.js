@@ -35,7 +35,7 @@ angular.module('myApp.controllers', []).
         var dates = [];
         var i, j;
         for (i = 0; i < lastDayInMonth.getDate(); i++) {
-          dates[i] = { 'date' : i + 1, 'weekday' : new Date( $scope.year, $scope.month, i + 1).getDay(), 'events' : []};
+          dates[i] = { 'date' :  new Date( $scope.year, $scope.month, i + 1), 'events' : []};
           for (j = 0; j < calendars.length; j++) {
             dates[i].events.push([]);
           }                   
@@ -108,9 +108,9 @@ angular.module('myApp.controllers', []).
         refreshDatesAndEventsMap();
       }
 
-      $scope.setSelected = function ( calendarIndex, year, month, day ) {  
+      $scope.setSelected = function ( calendarIndex, date ) {  
         $scope.selectedCalendar = { 'index' : calendarIndex, 'id' : $scope.calendarIds[calendarIndex], 'summary' : $scope.calendarSummaries[calendarIndex]};
-        $scope.selectedDay = day;      
+        $scope.selectedDay = date.getDate();      
       }
 
       $scope.saveEvent = function () {

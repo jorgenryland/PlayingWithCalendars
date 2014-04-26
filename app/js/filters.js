@@ -20,6 +20,14 @@ angular.module('myApp.filters', []).
       return dayNames[input];
     };
   }).
+  filter('showWeekNumber', function() {    
+    return function(input) {
+      if (input.getDay() === 1) { //Monday
+        return input.getWeek()
+      }
+      return '  ';
+    };
+  }).
   filter('eventStart', function() {
   	return function(input) {
   		if(input) {
