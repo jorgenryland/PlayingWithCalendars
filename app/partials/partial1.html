@@ -5,6 +5,9 @@
 </ul>
 <!--div class="table-responsive"-->
 <table class="table table-responsive table-bordered">
+    <colgroup>
+        <col ng-repeat="day in dates" span="1">
+    </colgroup>
     <thead>
       <tr>
         <td><h3>{{month | nameOfMonth}} {{year}}</h3></td>
