@@ -78,8 +78,14 @@ angular.module('myApp.controllers', []).
         });
       }
 
-      $scope.showCalendarColor = function(calendarIndex, dateIndex) {
-        return $scope.dates[dateIndex].events[calendarIndex].length > 0 ? $scope.calendarsWithEvents[calendarIndex].color : '';
+      $scope.showCalendarColor = function(calendarIndex, date) {
+        var weekDay = date.getDay();
+        return $scope.dates[date.getDate() -1].events[calendarIndex].length > 0 ? $scope.calendarsWithEvents[calendarIndex].color 
+        : (weekDay === 0 || weekDay === 6 ? '#E6E6E6' : '');
+      }
+
+      $scope.getDayBgColor = function(weekDay) {
+        return weekDay === 0 || weekDay === 6 ? '#E6E6E6' : '';
       }
 
       $scope.getCalendarColor = function(calendarIndex) {
