@@ -63,10 +63,29 @@ angular.module('myApp.controllers', []).
         for (i = startDate.getDate() ; i < Math.min(endDay, $scope.dates.length + 1); i++) {
           $scope.dates[i - 1].events[calendarIndex].push(event);
         }
+      },
+      setDefaultEventRegValues = function() {
+        $scope.selectedStartTime = 25200000;
+        $scope.selectedEndTime = 25200000;
+        $scope.fullDayOrTimeboxed = 0;
+        $scope.recurrence = 0;  
       };
 
+      setDefaultEventRegValues();
+
       $scope.month = today.getMonth();
-      $scope.year = today.getFullYear();
+      $scope.year = today.getFullYear();      
+          
+      $scope.numberOfDays = [
+        { value:1, label:'1'},
+        { value:2, label:'2'},
+        { value:3, label:'3'},
+        { value:4, label:'4'},
+        { value:5, label:'5'},
+        { value:6, label:'6'},
+        { value:7, label:'7'}
+      ];
+      $scope.selectedNumberOfDays = $scope.numberOfDays[0];
 
       $scope.loadEvents = function() {
         googleCalendar.loadData().then(function() {
@@ -120,8 +139,8 @@ angular.module('myApp.controllers', []).
       }
 
       $scope.saveEvent = function () {
-        var startTime, endTime, isFulldayEvent, title;
-        if (this.selectedStartTime && this.selectedEndTime) {
+        var startTime, endTime, isFulldayEvent, title, numberOfDays, recurrence;
+        if (this.fullDayOrTimeboxed) {
           startTime = new Date(this.selectedStartTime);
           endTime = new Date(this.selectedEndTime);
           startTime.setYear($scope.year);
@@ -137,11 +156,14 @@ angular.module('myApp.controllers', []).
         }   
         else {
           startTime = new Date(Date.UTC($scope.year, $scope.month, $scope.selectedDay));
-          endTime  = new Date(Date.UTC($scope.year, $scope.month, $scope.selectedDay + 1));
+          endTime  = new Date(Date.UTC($scope.year, $scope.month, $scope.selectedDay + this.selectedNumberOfDays.value));
           isFulldayEvent = true;
-        }
+        }        
         title = this.title.slice(0);
-        this.title = this.selectedStartTime = this.selectedEndTime = null;
+        this.title = null;
+
+        this.selectedStartTime = this.selectedEndTime = 25200000;
+        this.fullDayOrTimeboxed = this.recurrence = 0;
         this.$hide();
 
         googleCalendar.saveEvent($scope.selectedCalendar.id, startTime, endTime, title, isFulldayEvent).then(function() {

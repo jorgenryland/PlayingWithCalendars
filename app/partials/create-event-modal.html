@@ -11,35 +11,61 @@
 				<div class="row">
 					<div class="col-md-2"><label class="control-label">Kva skjer</label></div>
 					<div class="col-md-10"><input type="text" ng-model="title" name="Tittel"/></div>
-				</div>
+				</div>				
 				<br>
-				<div class="row">
+				<div class="row" ng-show="!fullDayOrTimeboxed">
+					<div class="col-md-2">
+						<label>Dagar:&nbsp;</label>
+					</div>
+					<div class="col-md-10">
+						<select ng-model="selectedNumberOfDays" ng-options="day.label for day in numberOfDays"></select>					
+					</div>			
+				</div>
+				<div class="row" ng-show="fullDayOrTimeboxed">
 					<div class="col-md-2">
 						<label class="control-label"><span class="glyphicon glyphicon-time"></span> Start</label>
 					</div>
 					<div class="col-md-4">
-						<input type="text" size="5" ng-model="selectedStartTime" data-time-format="HH:mm" data-time-type="number" data-min-time="00:00" data-max-time="23:59" data-autoclose="1" name="time2" bs-timepicker>
+						<input type="text" size="4" ng-model="selectedStartTime" data-time-format="HH:mm" data-time-type="number" data-min-time="00:00" data-max-time="23:59" data-autoclose="1" name="time2" bs-timepicker>
 					</div>							
 					<div class="col-md-2">
 						<label class="control-label"><span class="glyphicon glyphicon-time"></span> Slutt</label>
 					</div>
 					<div class="col-md-4">
-						<input type="text" size="5" ng-model="selectedEndTime" data-time-format="HH:mm" data-time-type="number" data-min-time="00:00" data-max-time="23:59" data-autoclose="1" name="time2" bs-timepicker>
+						<input type="text" size="4" ng-model="selectedEndTime" data-time-format="HH:mm" data-time-type="number" data-min-time="00:00" data-max-time="23:59" data-autoclose="1" name="time2" bs-timepicker>
 					</div>
 				</div>
 				<br>
 				<div class="row">
-					<div class="col-md-12">
-						<h4 ng-show="hasEvents()">Registrerte hendingar</h4>
+					<div class="col-md-6">
+						<div class="btn-group" ng-model="fullDayOrTimeboxed" bs-radio-group>
+						  <label class="btn btn-default"><input type="radio" class="btn btn-default" value="0"> Heildag  </label>
+						  <label class="btn btn-default"><input type="radio" class="btn btn-default" value="1"> Tidspunkt</label>
+					  	</div>
 					</div>
-				</div>	
-				<br>			
-				<div class="row" ng-repeat="event in dates[selectedDay - 1].events[selectedCalendar.index]">
-					<div class="col-md-1">
-						<span ng-click="deleteEvent(event.id)" class="glyphicon glyphicon-remove-circle"></span>
-					</div>
-					<div class="col-md-11">
-						<p> {{event.start.dateTime | eventStart}}{{event.end.dateTime | eventEnd}}{{event.summary}}</p>
+					<div class="col-md-6">
+						<div class="btn-group" ng-model="recursion" bs-radio-group>
+						  <label class="btn btn-default"><input type="radio" class="btn btn-default" value="0"> Engongs  </label>
+						  <label class="btn btn-default"><input type="radio" class="btn btn-default" value="1"> Vekentleg</label>
+						  <label class="btn btn-default"><input type="radio" class="btn btn-default" value="2"> Årleg    </label>
+					  	</div>
+					</div>					
+				</div>
+				<div ng-show="hasEvents()">
+					<hr>
+					<div class="row">
+						<div class="col-md-12">
+							<h4 ng-show="hasEvents()">Registrerte hendingar</h4>
+						</div>
+					</div>	
+					<br>			
+					<div class="row" ng-repeat="event in dates[selectedDay - 1].events[selectedCalendar.index]">
+						<div class="col-md-1">
+							<span ng-click="deleteEvent(event.id)" class="glyphicon glyphicon-remove-circle"></span>
+						</div>
+						<div class="col-md-11">
+							<p> {{event.start.dateTime | eventStart}}{{event.end.dateTime | eventEnd}}{{event.summary}}</p>
+						</div>
 					</div>
 				</div>
 			</div>
