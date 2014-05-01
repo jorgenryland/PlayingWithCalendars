@@ -15,14 +15,14 @@ describe('controllers', function(){
             calendars: [{
               id : '1234',
               summary : 'Jørgen',
-              events : [{ start : { date : '2014-04-12'}, end: { date : '2014-04-13'}, summary : "Single event"}, 
-                { start : { date : '2014-04-20'}, end : { date : '2014-04-22'}, summary : "Two day event"}]
+              events : [{ start : { date : '2014-05-12'}, end: { date : '2014-05-13'}, summary : "Single event"}, 
+                { start : { date : '2014-05-20'}, end : { date : '2014-05-22'}, summary : "Two day event"}]
             },
             {
               id : '1111',
               summary : 'Laila',
-              events : [{ start : { date : '2014-04-13'}, end : { date : '2014-04-14'}, summary : 'The event' }, 
-                { start : { date : '2014-04-13'}, end : { date : '2014-04-14'}, summary : 'Another event' }]
+              events : [{ start : { date : '2014-05-13'}, end : { date : '2014-05-14'}, summary : 'The event' }, 
+                { start : { date : '2014-05-13'}, end : { date : '2014-05-14'}, summary : 'Another event' }]
             }],
             loadData: function()
             {

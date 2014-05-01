@@ -44,7 +44,7 @@
 					  	</div>
 					</div>
 					<div class="col-md-6">
-						<div class="btn-group" ng-model="recursion" bs-radio-group>
+						<div class="btn-group" ng-model="recurrence" bs-radio-group>
 						  <label class="btn btn-default"><input type="radio" class="btn btn-default" value="0"> Engongs  </label>
 						  <label class="btn btn-default"><input type="radio" class="btn btn-default" value="1"> Vekentleg</label>
 						  <label class="btn btn-default"><input type="radio" class="btn btn-default" value="2"> Årleg    </label>
@@ -61,7 +61,7 @@
 					<br>			
 					<div class="row" ng-repeat="event in dates[selectedDay - 1].events[selectedCalendar.index]">
 						<div class="col-md-1">
-							<span ng-click="deleteEvent(event.id)" class="glyphicon glyphicon-remove-circle"></span>
+							<span ng-click="deleteEvent(event.id, event.recurringEventId)" class="glyphicon glyphicon-remove-circle"></span>
 						</div>
 						<div class="col-md-11">
 							<p> {{event.start.dateTime | eventStart}}{{event.end.dateTime | eventEnd}}{{event.summary}}</p>

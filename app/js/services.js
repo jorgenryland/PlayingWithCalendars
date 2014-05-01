@@ -35,7 +35,8 @@ angular.module('myApp.services', []).
             // bind i to function to allow asynchronous functions inside for loop
             (function(cntr) {
               var request = gapi.client.calendar.events.list({
-                calendarId: calendars[i].id
+                calendarId: calendars[i].id,
+                singleEvents: true
               });
               request.B.apiVersion = "v3";
               request.execute(function(resp) {
@@ -68,13 +69,20 @@ angular.module('myApp.services', []).
 
         return deferred.promise;
     },
-    saveEvent = function(calendarId, startTime, endTime, title, isFulldayEvent) {
+    saveEvent = function(calendarId, startTime, endTime, title, isFulldayEvent, recurring) {
       var deferred = $q.defer(),
       formatDate = function(date) {
         return date.toISOString().slice(0,10);
       },
       formatDateTime = function(date) {
         return date.toISOString();
+      },
+      toAnnoyingRecurrencedateFormat = function(date) {
+        // Format 20110701T100000Z. NB! Hardcoded timezone offset
+        return String(date.getFullYear()) + twoPad(date.getMonth()) + twoPad(date.getDate()) + 'T' + twoPad(date.getHours()) + twoPad(date.getMinutes()) + '00Z';
+      },
+      twoPad = function(number) {
+        return ('0' + number).slice(-2);
       };
       gapi.client.load('calendar','v3', function() {
         var resource = {
@@ -83,6 +91,17 @@ angular.module('myApp.services', []).
         resource.start = isFulldayEvent ? {"date" : formatDate(startTime)} : {"dateTime" : formatDateTime(startTime)};
         resource.end = isFulldayEvent ? {"date" : formatDate(endTime)} : {"dateTime" : formatDateTime(endTime)};
 
+        if (recurring) {
+          var recurrenceString;
+          resource.start.timeZone = resource.end.timeZone =  "Europe/Zurich";
+          if (recurring === 'weekly') {            
+            recurrenceString = "RRULE:FREQ=WEEKLY;UNTIL=" + toAnnoyingRecurrencedateFormat(new Date(startTime.getFullYear(), startTime.getMonth() + 1 + 6, startTime.getDate()));
+          }
+          else {
+            recurrenceString = "RRULE:FREQ=YEARLY;UNTIL=" + toAnnoyingRecurrencedateFormat(new Date(startTime.getFullYear() + 10, startTime.getMonth() + 1, startTime.getDate()));
+          }
+          resource.recurrence = [recurrenceString,];
+        }
         var request = gapi.client.calendar.events.insert({
           'calendarId': calendarId,
           'resource': resource

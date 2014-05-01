@@ -139,7 +139,7 @@ angular.module('myApp.controllers', []).
       }
 
       $scope.saveEvent = function () {
-        var startTime, endTime, isFulldayEvent, title, numberOfDays, recurrence;
+        var startTime, endTime, isFulldayEvent, title, recurrence;
         if (this.fullDayOrTimeboxed) {
           startTime = new Date(this.selectedStartTime);
           endTime = new Date(this.selectedEndTime);
@@ -159,6 +159,7 @@ angular.module('myApp.controllers', []).
           endTime  = new Date(Date.UTC($scope.year, $scope.month, $scope.selectedDay + this.selectedNumberOfDays.value));
           isFulldayEvent = true;
         }        
+        recurrence = this.recurrence === 0 ? null : (this.recurrence === 1 ? 'weekly' : 'yearly');
         title = this.title.slice(0);
         this.title = null;
 
@@ -166,7 +167,7 @@ angular.module('myApp.controllers', []).
         this.fullDayOrTimeboxed = this.recurrence = 0;
         this.$hide();
 
-        googleCalendar.saveEvent($scope.selectedCalendar.id, startTime, endTime, title, isFulldayEvent).then(function() {
+        googleCalendar.saveEvent($scope.selectedCalendar.id, startTime, endTime, title, isFulldayEvent, recurrence).then(function() {
           $scope.loadEvents();        
         });      
       }
@@ -175,8 +176,9 @@ angular.module('myApp.controllers', []).
         return $scope.dates[$scope.selectedDay - 1].events[$scope.selectedCalendar.index].length > 0;     
       }
 
-      $scope.deleteEvent = function ( eventId ) {  
-        googleCalendar.deleteEvent($scope.selectedCalendar.id, eventId).then(function() {
+      $scope.deleteEvent = function ( eventId, recurringEventId ) {  
+        var id = recurringEventId ? recurringEventId : eventId; 
+        googleCalendar.deleteEvent($scope.selectedCalendar.id, id).then(function() {
           $scope.loadEvents();        
         });           
       }
