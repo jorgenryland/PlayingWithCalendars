@@ -2,7 +2,7 @@
 
 /* Controllers */
 
-angular.module('myApp.controllers', []).
+angular.module('myApp.controllers', ['ngSanitize']).
   controller('CalendarCtrl', ['$scope', 'googleCalendar', function ($scope, googleCalendar) {
       var today = new Date(),               
       isFamilyCalendar = function(calendar) {
@@ -86,6 +86,18 @@ angular.module('myApp.controllers', []).
         { value:7, label:'7'}
       ];
       $scope.selectedNumberOfDays = $scope.numberOfDays[0];
+      
+      $scope.icons = [
+        { value:'nada', label:'Ikon...'},
+        { value:'glyphicon glyphicon-music', label:'<i class="glyphicon glyphicon-music"></i>'},
+        { value:'glyphicon glyphicon-headphones', label:'<i class="glyphicon glyphicon-headphones"></i>'},
+        { value:'glyphicon glyphicon-glass', label:'<i class="glyphicon glyphicon-glass"></i>'},
+        { value:'glyphicon glyphicon-film', label:'<i class="glyphicon glyphicon-film"></i>'},
+        { value:'glyphicon glyphicon-plane', label:'<i class="glyphicon glyphicon-plane"></i>'},
+        { value:'glyphicon glyphicon-heart', label:'<i class="glyphicon glyphicon-heart"></i>'},
+        { value:'glyphicon glyphicon-road', label:'<i class="glyphicon glyphicon-road"></i>'},
+      ];
+      $scope.selectedIcon = $scope.icons[0].value;
 
       $scope.loadEvents = function() {
         googleCalendar.loadData().then(function() {
@@ -139,7 +151,7 @@ angular.module('myApp.controllers', []).
       }
 
       $scope.saveEvent = function () {
-        var startTime, endTime, isFulldayEvent, title, recurrence;
+        var startTime, endTime, isFulldayEvent, title, recurrence, description;
         if (this.fullDayOrTimeboxed) {
           startTime = new Date(this.selectedStartTime);
           endTime = new Date(this.selectedEndTime);
@@ -160,6 +172,8 @@ angular.module('myApp.controllers', []).
           isFulldayEvent = true;
         }        
         recurrence = this.recurrence === 0 ? null : (this.recurrence === 1 ? 'weekly' : 'yearly');
+        description = this.selectedIcon === 'nada' ? null : this.selectedIcon.slice(0);
+        this.selectedIcon = this.icons[0];
         title = this.title.slice(0);
         this.title = null;
 
@@ -167,7 +181,7 @@ angular.module('myApp.controllers', []).
         this.fullDayOrTimeboxed = this.recurrence = 0;
         this.$hide();
 
-        googleCalendar.saveEvent($scope.selectedCalendar.id, startTime, endTime, title, isFulldayEvent, recurrence).then(function() {
+        googleCalendar.saveEvent($scope.selectedCalendar.id, startTime, endTime, title, isFulldayEvent, recurrence, description).then(function() {
           $scope.loadEvents();        
         });      
       }

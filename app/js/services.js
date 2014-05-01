@@ -69,7 +69,7 @@ angular.module('myApp.services', []).
 
         return deferred.promise;
     },
-    saveEvent = function(calendarId, startTime, endTime, title, isFulldayEvent, recurring) {
+    saveEvent = function(calendarId, startTime, endTime, title, isFulldayEvent, recurring, description) {
       var deferred = $q.defer(),
       formatDate = function(date) {
         return date.toISOString().slice(0,10);
@@ -86,7 +86,8 @@ angular.module('myApp.services', []).
       };
       gapi.client.load('calendar','v3', function() {
         var resource = {
-          "summary": title
+          "summary": title,
+          "description": description
         };
         resource.start = isFulldayEvent ? {"date" : formatDate(startTime)} : {"dateTime" : formatDateTime(startTime)};
         resource.end = isFulldayEvent ? {"date" : formatDate(endTime)} : {"dateTime" : formatDateTime(endTime)};

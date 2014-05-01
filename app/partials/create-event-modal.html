@@ -10,7 +10,12 @@
 				<br>									
 				<div class="row">
 					<div class="col-md-2"><label class="control-label">Kva skjer</label></div>
-					<div class="col-md-10"><input type="text" ng-model="title" name="Tittel"/></div>
+					<div class="col-md-4"><input type="text" ng-model="title" name="Tittel"/></div>
+					<div class="col-md-6">
+						<button type="button" class="btn btn-default" ng-model="selectedIcon" data-html="1" placeholder="Velg ikon" ng-options="icon.value as icon.label for icon in icons" bs-select>      						
+					      Action <span class="caret"></span>
+					    </button>
+					</div>
 				</div>				
 				<br>
 				<div class="row" ng-show="!fullDayOrTimeboxed">

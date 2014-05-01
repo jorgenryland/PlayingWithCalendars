@@ -9,7 +9,7 @@
     </colgroup>
     <thead>
       <tr>
-        <td><h3>{{month | nameOfMonth}} {{year}}</h3></td>
+        <td><h4>{{month | nameOfMonth}} {{year}}</h4></td>
         <th ng-repeat="summary in calendarSummaries">
           {{summary}}</th>
       </tr>
@@ -21,8 +21,9 @@
           <span class="pull-right"><small>{{day.date | showWeekNumber}}</small></span>
         </th>  
          <td ng-click="setSelected($index, day.date)" ng-style="{background: showCalendarColor($index, day.date)}" ng-repeat="eventlist in day.events track by $index" data-animation="am-fade-and-slide-top" data-template="partials/create-event-modal.html" bs-modal="modal" >      
-          <p ng-repeat="event in eventlist track by $index">  
-            {{event.start.dateTime | eventStart}}{{event.end.dateTime | eventEnd}}{{event.summary}}
+          <p ng-repeat="event in eventlist track by $index">              
+            <span>{{event.start.dateTime | eventStart}}{{event.end.dateTime | eventEnd}}{{event.summary}}</span>
+            <span class="pull-right"><i class={{event.description}}></i></span>
           </p>
         </td>
       </tr>
