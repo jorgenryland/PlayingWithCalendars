@@ -15,14 +15,14 @@ describe('controllers', function(){
             calendars: [{
               id : '1234',
               summary : 'Jørgen',
-              events : [{ start : { date : '2014-05-12'}, end: { date : '2014-05-13'}, summary : "Single event"}, 
-                { start : { date : '2014-05-20'}, end : { date : '2014-05-22'}, summary : "Two day event"}]
+              events : [{ start : { date : '2019-05-12'}, end: { date : '2019-05-13'}, summary : "Single event"}, 
+                { start : { date : '2019-05-20'}, end : { date : '2019-05-22'}, summary : "Two day event"}]
             },
             {
               id : '1111',
               summary : 'Laila',
-              events : [{ start : { date : '2014-05-13'}, end : { date : '2014-05-14'}, summary : 'The event' }, 
-                { start : { date : '2014-05-13'}, end : { date : '2014-05-14'}, summary : 'Another event' }]
+              events : [{ start : { date : '2019-05-13'}, end : { date : '2019-05-14'}, summary : 'The event' }, 
+                { start : { date : '2019-05-13'}, end : { date : '2019-05-14'}, summary : 'Another event' }]
             }],
             loadData: function()
             {
@@ -89,7 +89,9 @@ describe('controllers', function(){
         expect(GoogleCalendarServiceMock.loadData).toHaveBeenCalled();        
     });
 
-    it('should map event to correct date', function () {          
+    it('should map event to correct date', function () {
+        scope.year = 2019;
+        scope.month = 4;
         scope.loadEvents();
 
         getAllEventsDeferred.resolve();
@@ -100,7 +102,9 @@ describe('controllers', function(){
         expect(scope.dates[11].events[0].length).toBe(1);       
     });
 
-    it('should map multiple events to same date', function () {          
+    it('should map multiple events to same date', function () {
+        scope.year = 2019;
+        scope.month = 4;
         scope.loadEvents();
 
         getAllEventsDeferred.resolve();
@@ -110,7 +114,9 @@ describe('controllers', function(){
         expect(scope.dates[12].events[1].length).toBe(2);       
     });
 
-    it('should map a two day event over two dates', function () {          
+    it('should map a two day event over two dates', function () {
+        scope.year = 2019;
+        scope.month = 4;
         scope.loadEvents();
 
         getAllEventsDeferred.resolve();
