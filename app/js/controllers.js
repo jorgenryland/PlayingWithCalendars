@@ -96,6 +96,14 @@ angular.module('myApp.controllers', ['ngSanitize']).
         { value:'glyphicon glyphicon-plane', label:'<i class="glyphicon glyphicon-plane"></i>'},
         { value:'glyphicon glyphicon-heart', label:'<i class="glyphicon glyphicon-heart"></i>'},
         { value:'glyphicon glyphicon-road', label:'<i class="glyphicon glyphicon-road"></i>'},
+        { value:'glyphicon glyphicon-camera', label:'<i class="glyphicon glyphicon-camera"></i>'},
+        { value:'glyphicon glyphicon-gift', label:'<i class="glyphicon glyphicon-gift"></i>'},
+        { value:'glyphicon glyphicon-picture', label:'<i class="glyphicon glyphicon-picture"></i>'},
+        { value:'glyphicon glyphicon-shopping-cart', label:'<i class="glyphicon glyphicon-shopping-cart"></i>'},
+        { value:'glyphicon glyphicon-wrench', label:'<i class="glyphicon glyphicon-wrench"></i>'},
+        { value:'glyphicon glyphicon-globe', label:'<i class="glyphicon glyphicon-globe"></i>'},
+        { value:'glyphicon glyphicon-tree-conifer', label:'<i class="glyphicon glyphicon-tree-conifer"></i>'},
+        { value:'glyphicon glyphicon-pencil', label:'<i class="glyphicon glyphicon-pencil"></i>'},
       ];
       $scope.selectedIcon = $scope.icons[0].value;
 
