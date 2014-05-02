@@ -22,7 +22,8 @@ describe('controllers', function(){
               id : '1111',
               summary : 'Laila',
               events : [{ start : { date : '2019-05-13'}, end : { date : '2019-05-14'}, summary : 'The event' }, 
-                { start : { date : '2019-05-13'}, end : { date : '2019-05-14'}, summary : 'Another event' }]
+                { start : { date : '2019-05-13'}, end : { date : '2019-05-14'}, summary : 'Another event' },
+                { start : { date : '2019-05-31'}, end : { date : '2019-06-02'}, summary : 'Event spaning over months' }]
             }],
             loadData: function()
             {
@@ -124,6 +125,17 @@ describe('controllers', function(){
 
         expect(scope.dates[19].events[0].length).toBe(1);   
         expect(scope.dates[20].events[0].length).toBe(1);       
+    });
+
+   it('should display event splitted over two pages on second page', function () {
+      scope.year = 2019;
+      scope.month = 5;
+      scope.loadEvents();
+
+      getAllEventsDeferred.resolve();
+      scope.$root.$digest();
+
+      expect(scope.dates[0].events[1].length).toBe(1);
     });
 
     it('should map calendars summary', function () {                

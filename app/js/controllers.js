@@ -15,14 +15,17 @@ angular.module('myApp.controllers', ['ngSanitize']).
         return true;
       },
       isValidMonth = function(event) {
-        var date;
+        var startDate, endDate;
         if (event.start.date) {
-          date = new Date(event.start.date);
+          startDate = new Date(event.start.date);
+          endDate = new Date(event.end.date);
         }
         else {
-          date = new Date(event.start.dateTime);
+          startDate = new Date(event.start.dateTime);
+          endDate = new Date(event.end.dateTime);
         } 
-        return date.getMonth() === $scope.month && date.getFullYear() === $scope.year;
+        return startDate.getMonth() === $scope.month && startDate.getFullYear() === $scope.year || 
+          endDate.getMonth() === $scope.month && endDate.getFullYear() === $scope.year;
       },
       getCalendarSummary = function(calendar) {
         return calendar.summary;
@@ -58,6 +61,9 @@ angular.module('myApp.controllers', ['ngSanitize']).
           return;
         }
         startDate = new Date(event.start.date);
+        if (startDate.getMonth() !== $scope.month) {
+          startDate = new Date(startDate.getFullYear(), startDate.getMonth() + 1, 1);
+        }
         var timespanInMS = new Date(event.end.date) - startDate;
         var endDay = startDate.getDate() + timespanInMS/(1000 * 60 * 60 * 24);
         for (i = startDate.getDate() ; i < Math.min(endDay, $scope.dates.length + 1); i++) {
