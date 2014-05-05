@@ -1,44 +1,46 @@
 <!--div ng-init="loadEvents()"></div-->
-<ul class="pager">
-  <li class="previous"><a href="" ng-click="decrementMonth()">&larr; Forrige</a></li>
-  <li class="next"><a href="" ng-click="incrementMonth()">Neste &rarr;</a></li>
-</ul>
-<table class="table table-responsive table-bordered">
-    <colgroup>
-        <col ng-repeat="day in dates" span="1">
-    </colgroup>
-    <thead>
-      <tr>
-        <td><h4>{{month | nameOfMonth}} {{year}}</h4></td>
-        <th ng-repeat="summary in calendarSummaries">
-          {{summary}}</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr ng-repeat="day in dates track by $index">
-        <th ng-style="{background: getDayBgColor(day.date.getDay())}">
-          <div class="row">
-            <div class="col-md-10">
-              <span>{{day.date.getDate()}}. {{day.date.getDay() | nameOfDay}}   </span>
+<div ng-show="dates">
+  <ul class="pager">
+    <li class="previous"><a href="" ng-click="decrementMonth()">&larr; Forrige</a></li>
+    <li class="next"><a href="" ng-click="incrementMonth()">Neste &rarr;</a></li>
+  </ul>
+  <table class="table table-responsive table-bordered">
+      <colgroup>
+          <col ng-repeat="day in dates" span="1">
+      </colgroup>
+      <thead>
+        <tr>
+          <td><h4>{{currentStartDate.getMonth() | nameOfMonth}} {{currentStartDate.getFullYear()}}</h4></td>
+          <th ng-repeat="summary in calendarSummaries">
+            {{summary}}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="day in dates track by $index">
+          <th ng-style="{background: getDayBgColor(day.date.getDay())}">
+            <div class="row">
+              <div class="col-md-10">
+                <span>{{day.date.getDate()}}. {{day.date.getDay() | nameOfDay}}   </span>
+              </div>
+              <div class="col-md-2">
+                <span class="pull-right"><small>{{day.date | showWeekNumber}}</small></span>
+              </div>
             </div>
-            <div class="col-md-2">
-              <span class="pull-right"><small>{{day.date | showWeekNumber}}</small></span>
+          </th>  
+           <td ng-click="setSelected($index, day.date)" ng-style="{background: showCalendarColor12($index, day.date)}" ng-repeat="eventlist in day.events track by $index" data-animation="am-fade-and-slide-top" data-template="partials/create-event-modal.html" bs-modal="modal" >           
+            <div class="row" ng-repeat="event in eventlist track by $index">
+              <div class="col-md-10">
+                <span>{{event.start.dateTime | eventStart}}{{event.end.dateTime | eventEnd}}{{event.summary}}</span>
+              </div>
+              <div class="col-md-2">
+                <span class="pull-right"><i class={{event.description}}></i></span>
+              </div>
             </div>
-          </div>
-        </th>  
-         <td ng-click="setSelected($index, day.date)" ng-style="{background: showCalendarColor($index, day.date)}" ng-repeat="eventlist in day.events track by $index" data-animation="am-fade-and-slide-top" data-template="partials/create-event-modal.html" bs-modal="modal" >           
-          <div class="row" ng-repeat="event in eventlist track by $index">
-            <div class="col-md-10">
-              <span>{{event.start.dateTime | eventStart}}{{event.end.dateTime | eventEnd}}{{event.summary}}</span>
-            </div>
-            <div class="col-md-2">
-              <span class="pull-right"><i class={{event.description}}></i></span>
-            </div>
-          </div>
-        </td>
-      </tr>
-    </tbody>
-</table>
+          </td>
+        </tr>
+      </tbody>
+  </table>
+</div>
 <div>
-  <button ng-click="loadEvents()">Get Calendar Entries</button>
+  <button ng-click="loadEvents()" ng-show="!dates">Get Calendar Entries</button>
 </div>

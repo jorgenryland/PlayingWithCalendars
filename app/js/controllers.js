@@ -13,9 +13,10 @@ angular.module('myApp.controllers', ['ngSanitize']).
         }
 
         return true;
-      },
+      },      
       isValidMonth = function(event) {
         var startDate, endDate;
+        var firstUnvalidDate = new Date( $scope.currentStartDate.getFullYear(), $scope.currentStartDate.getMonth(), $scope.currentStartDate.getDate() + $scope.pageSize);
         if (event.start.date) {
           startDate = new Date(event.start.date);
           endDate = new Date(event.end.date);
@@ -24,27 +25,16 @@ angular.module('myApp.controllers', ['ngSanitize']).
           startDate = new Date(event.start.dateTime);
           endDate = new Date(event.end.dateTime);
         } 
-        return startDate.getMonth() === $scope.month && startDate.getFullYear() === $scope.year || 
-          endDate.getMonth() === $scope.month && endDate.getFullYear() === $scope.year;
+
+        return $scope.getDiffNumberOfDays($scope.currentStartDate, startDate) >= 0 && $scope.getDiffNumberOfDays(startDate, firstUnvalidDate) > 0 || 
+          $scope.getDiffNumberOfDays($scope.currentStartDate, endDate) >= 0 && $scope.getDiffNumberOfDays(endDate, firstUnvalidDate) > 0;
       },
       getCalendarSummary = function(calendar) {
         return calendar.summary;
       },
       getCalendarId = function(calendar) {
         return calendar.id;
-      },
-      createDatesAndEventsMap = function(calendars) {
-        var lastDayInMonth = new Date( $scope.year, $scope.month + 1, 0 );
-        var dates = [];
-        var i, j;
-        for (i = 0; i < lastDayInMonth.getDate(); i++) {
-          dates[i] = { 'date' :  new Date( $scope.year, $scope.month, i + 1), 'events' : []};
-          for (j = 0; j < calendars.length; j++) {
-            dates[i].events.push([]);
-          }                   
-        }
-        return dates;
-      },
+      },      
       refreshDatesAndEventsMap = function() {
         $scope.dates = createDatesAndEventsMap($scope.calendarsWithEvents);
 
@@ -53,21 +43,33 @@ angular.module('myApp.controllers', ['ngSanitize']).
             addEventToDatesAndEventsMap(event, calendarIndex);
           })
         }); 
-      },
+      },      
+      createDatesAndEventsMap = function(calendars) {
+        var dates = [];
+        var i, j;
+        for (i = 0; i < $scope.pageSize; i++) {
+          dates[i] = { 'date' :  new Date( $scope.currentStartDate.getFullYear(), $scope.currentStartDate.getMonth(), $scope.currentStartDate.getDate() + i), 'events' : []};
+          for (j = 0; j < calendars.length; j++) {
+            dates[i].events.push([]);
+          }                   
+        }
+        return dates;
+      },      
       addEventToDatesAndEventsMap = function(event, calendarIndex) {      
-        var startDate, i;
+        var startDate, i, index;
         if (event.start.dateTime) {
-          $scope.dates[new Date(event.start.dateTime).getDate() - 1].events[calendarIndex].push(event);
+          $scope.dates[$scope.getDiffNumberOfDays($scope.currentStartDate, new Date(event.start.dateTime))].events[calendarIndex].push(event);
           return;
         }
         startDate = new Date(event.start.date);
-        if (startDate.getMonth() !== $scope.month) {
-          startDate = new Date(startDate.getFullYear(), startDate.getMonth() + 1, 1);
-        }
-        var timespanInMS = new Date(event.end.date) - startDate;
-        var endDay = startDate.getDate() + timespanInMS/(1000 * 60 * 60 * 24);
-        for (i = startDate.getDate() ; i < Math.min(endDay, $scope.dates.length + 1); i++) {
-          $scope.dates[i - 1].events[calendarIndex].push(event);
+        var startIndex = $scope.getDiffNumberOfDays($scope.currentStartDate, startDate);
+        
+        var durationInDays = $scope.getDiffNumberOfDays(startDate, new Date(event.end.date));
+        
+        for (i = startIndex ; i < Math.min(startIndex + durationInDays, $scope.pageSize); i++) {
+          if (i >= 0) {
+            $scope.dates[i].events[calendarIndex].push(event);
+          }
         }
       },
       setDefaultEventRegValues = function() {
@@ -79,8 +81,8 @@ angular.module('myApp.controllers', ['ngSanitize']).
 
       setDefaultEventRegValues();
 
-      $scope.month = today.getMonth();
-      $scope.year = today.getFullYear();      
+      $scope.pageSize = 10;    
+      $scope.currentStartDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
           
       $scope.numberOfDays = [
         { value:1, label:'1'},
@@ -113,6 +115,14 @@ angular.module('myApp.controllers', ['ngSanitize']).
       ];
       $scope.selectedIcon = $scope.icons[0].value;
 
+      $scope.getDiffNumberOfDays = function(startDate, endDate) {
+        var strippedStartDate = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
+        var strippedEndDate = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate()); 
+        var oneDay = 24*60*60*1000; // hours*minutes*seconds*milliseconds
+        var days = Math.round((strippedEndDate.getTime() - strippedStartDate.getTime())/(oneDay));        
+        return days;
+      }
+
       $scope.loadEvents = function() {
         googleCalendar.loadData().then(function() {
           $scope.calendarsWithEvents = googleCalendar.calendars.filter(isFamilyCalendar);
@@ -123,9 +133,10 @@ angular.module('myApp.controllers', ['ngSanitize']).
         });
       }
 
-      $scope.showCalendarColor = function(calendarIndex, date) {
+      $scope.showCalendarColor12 = function(calendarIndex, date) {
         var weekDay = date.getDay();
-        return $scope.dates[date.getDate() -1].events[calendarIndex].length > 0 ? $scope.calendarsWithEvents[calendarIndex].color 
+        var dateIndex = $scope.getDiffNumberOfDays($scope.currentStartDate, date);
+        return $scope.dates[dateIndex].events[calendarIndex].length > 0 ? $scope.calendarsWithEvents[calendarIndex].color 
         : (weekDay === 0 || weekDay === 6 ? '#E6E6E6' : '');
       }
 
@@ -138,30 +149,18 @@ angular.module('myApp.controllers', ['ngSanitize']).
       }
 
       $scope.incrementMonth = function() {
-        if ($scope.month === 11) {
-          $scope.month = 0;
-          $scope.year+= 1;          
-        }
-        else {
-          $scope.month += 1;
-        }
+        $scope.currentStartDate = new Date($scope.currentStartDate.getFullYear(), $scope.currentStartDate.getMonth(), $scope.currentStartDate.getDate() + $scope.pageSize );
         refreshDatesAndEventsMap();
       }
 
       $scope.decrementMonth = function() {
-        if ($scope.month === 0) {
-          $scope.month = 11;
-          $scope.year -= 1;          
-        }
-        else {
-          $scope.month -= 1;
-        }        
+        $scope.currentStartDate = new Date($scope.currentStartDate.getFullYear(), $scope.currentStartDate.getMonth(), $scope.currentStartDate.getDate() - $scope.pageSize );
         refreshDatesAndEventsMap();
       }
 
       $scope.setSelected = function ( calendarIndex, date ) {  
         $scope.selectedCalendar = { 'index' : calendarIndex, 'id' : $scope.calendarIds[calendarIndex], 'summary' : $scope.calendarSummaries[calendarIndex]};
-        $scope.selectedDay = date.getDate();      
+        $scope.selectedDate = date;      
       }
 
       $scope.saveEvent = function () {
@@ -169,20 +168,20 @@ angular.module('myApp.controllers', ['ngSanitize']).
         if (this.fullDayOrTimeboxed) {
           startTime = new Date(this.selectedStartTime);
           endTime = new Date(this.selectedEndTime);
-          startTime.setYear($scope.year);
-          startTime.setMonth($scope.month);
-          startTime.setDate($scope.selectedDay);
-          endTime.setYear($scope.year);
-          endTime.setMonth($scope.month);
-          endTime.setDate($scope.selectedDay);          
+          startTime.setYear($scope.selectedDate.getFullYear());
+          startTime.setMonth($scope.selectedDate.getMonth());
+          startTime.setDate($scope.selectedDate.getDate());
+          endTime.setYear($scope.selectedDate.getFullYear());
+          endTime.setMonth($scope.selectedDate.getMonth());
+          endTime.setDate($scope.selectedDate.getDate());          
           if(endTime.getHours() === 0 && endTime.getMinutes() === 0) {
             endTime.setDate(endTime.getDate() + 1);
           }
           isFulldayEvent = false;
         }   
         else {
-          startTime = new Date(Date.UTC($scope.year, $scope.month, $scope.selectedDay));
-          endTime  = new Date(Date.UTC($scope.year, $scope.month, $scope.selectedDay + this.selectedNumberOfDays.value));
+          startTime = new Date(Date.UTC($scope.selectedDate.getFullYear(), $scope.selectedDate.getMonth(), $scope.selectedDate.getDate()));
+          endTime  = new Date(Date.UTC($scope.selectedDate.getFullYear(), $scope.selectedDate.getMonth(), $scope.selectedDate.getDate() + this.selectedNumberOfDays.value));
           isFulldayEvent = true;
         }        
         recurrence = this.recurrence === 0 ? null : (this.recurrence === 1 ? 'weekly' : 'yearly');
@@ -201,7 +200,7 @@ angular.module('myApp.controllers', ['ngSanitize']).
       }
 
       $scope.hasEvents = function () {  
-        return $scope.dates[$scope.selectedDay - 1].events[$scope.selectedCalendar.index].length > 0;     
+        return $scope.dates[$scope.getDiffNumberOfDays($scope.currentStartDate, $scope.selectedDate)].events[$scope.selectedCalendar.index].length > 0;     
       }
 
       $scope.deleteEvent = function ( eventId, recurringEventId ) {  

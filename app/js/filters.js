@@ -20,12 +20,18 @@ angular.module('myApp.filters', []).
       return dayNames[input];
     };
   }).
-  filter('showWeekNumber', function() {    
+  filter('showWeekNumber', function() {  
+    var monthNames = ['Januar', 'Februar', 'Mars', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Desember'];  
     return function(input) {
-      if (input.getDay() === 1) { //Monday
-        return input.getWeek()
-      }
-      return '  ';
+      var returnString = (input.getDate() === 1 ? monthNames[input.getMonth()] : '') + 
+        (input.getDay() === 1 && input.getDate() === 1 ? '  ' : '') + 
+        (input.getDay() === 1 ? input.getWeek() : '');
+
+      //if (input.getDay() === 1) { //Monday
+      //  return input.getWeek()
+      //}
+      //return '  ';
+      return returnString;
     };
   }).
   filter('eventStart', function() {
