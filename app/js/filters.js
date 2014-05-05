@@ -20,17 +20,16 @@ angular.module('myApp.filters', []).
       return dayNames[input];
     };
   }).
-  filter('showWeekNumber', function() {  
+  filter('showDateMetaInfo', function() {  
     var monthNames = ['Januar', 'Februar', 'Mars', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Desember'];  
     return function(input) {
-      var returnString = (input.getDate() === 1 ? monthNames[input.getMonth()] : '') + 
-        (input.getDay() === 1 && input.getDate() === 1 ? '  ' : '') + 
-        (input.getDay() === 1 ? input.getWeek() : '');
+      if (input.publicHoliday) {
+        return input.publicHoliday;
+      }
+      var returnString = (input.date.getDate() === 1 ? monthNames[input.date.getMonth()] : '') + 
+        (input.date.getDay() === 1 && input.date.getDate() === 1 ? '  ' : '') + 
+        (input.date.getDay() === 1 ? input.date.getWeek() : '');
 
-      //if (input.getDay() === 1) { //Monday
-      //  return input.getWeek()
-      //}
-      //return '  ';
       return returnString;
     };
   }).

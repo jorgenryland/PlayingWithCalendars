@@ -14,8 +14,33 @@ angular.module('myApp.controllers', ['ngSanitize']).
 
         return true;
       },      
+      isPublicHolidayCalendar = function(calendar) {
+        return calendar.summary === 'Helligdager i Norge' ? true : false;          
+      },
+      isPublicHoliday = function(event) {
+        // TODO: Lag regexp
+        if (event.summary === 'nyttårsdag' || 
+          event.summary === 'palmesøndag' ||
+          event.summary === 'skjærtorsdag' || 
+          event.summary === 'langfredag' ||
+          event.summary === '1. påskedag' || 
+          event.summary === '2. påskedag' ||
+          event.summary === 'offentlig høytidsdag' || 
+          event.summary === 'grunnlovsdag' ||
+          event.summary === 'Kristi Himmelfartsdag' || 
+          event.summary === '1. pinsedag' ||
+          event.summary === '2. pinsedag' || 
+          event.summary === 'julaften' ||
+          event.summary === '1. juledag' || 
+          event.summary === '2. juledag' ||
+          event.summary === 'nyttårsaften') {
+          return true;
+        }
+
+        return false;
+      },
       isValidMonth = function(event) {
-        var startDate, endDate;
+        var startDate, endDate, validMonth;
         var firstUnvalidDate = new Date( $scope.currentStartDate.getFullYear(), $scope.currentStartDate.getMonth(), $scope.currentStartDate.getDate() + $scope.pageSize);
         if (event.start.date) {
           startDate = new Date(event.start.date);
@@ -25,9 +50,12 @@ angular.module('myApp.controllers', ['ngSanitize']).
           startDate = new Date(event.start.dateTime);
           endDate = new Date(event.end.dateTime);
         } 
-
-        return $scope.getDiffNumberOfDays($scope.currentStartDate, startDate) >= 0 && $scope.getDiffNumberOfDays(startDate, firstUnvalidDate) > 0 || 
+        validMonth = $scope.getDiffNumberOfDays($scope.currentStartDate, startDate) >= 0 && $scope.getDiffNumberOfDays(startDate, firstUnvalidDate) > 0 || 
           $scope.getDiffNumberOfDays($scope.currentStartDate, endDate) >= 0 && $scope.getDiffNumberOfDays(endDate, firstUnvalidDate) > 0;
+        //if(validMonth) {
+        //  console.log('Current ' + $scope.currentStartDate + ', ' + startDate + ' - ' + endDate);
+        //}
+        return validMonth;
       },
       getCalendarSummary = function(calendar) {
         return calendar.summary;
@@ -43,6 +71,12 @@ angular.module('myApp.controllers', ['ngSanitize']).
             addEventToDatesAndEventsMap(event, calendarIndex);
           })
         }); 
+
+        $scope.publicHolidaysCalendar.forEach(function(calendar) {
+          calendar.events.filter(isPublicHoliday).filter(isValidMonth).forEach(function(event) {
+            addPublicHolidayEventToDatesAndEventsMap(event);
+          })
+        });
       },      
       createDatesAndEventsMap = function(calendars) {
         var dates = [];
@@ -70,6 +104,13 @@ angular.module('myApp.controllers', ['ngSanitize']).
           if (i >= 0) {
             $scope.dates[i].events[calendarIndex].push(event);
           }
+        }
+      },
+      addPublicHolidayEventToDatesAndEventsMap  = function(event) {      
+        var index = $scope.getDiffNumberOfDays($scope.currentStartDate, new Date(event.start.date));
+        console.log(event.summary);
+        if(index >= 0) {
+          $scope.dates[index].publicHoliday = event.summary;
         }
       },
       setDefaultEventRegValues = function() {
@@ -126,6 +167,7 @@ angular.module('myApp.controllers', ['ngSanitize']).
       $scope.loadEvents = function() {
         googleCalendar.loadData().then(function() {
           $scope.calendarsWithEvents = googleCalendar.calendars.filter(isFamilyCalendar);
+          $scope.publicHolidaysCalendar = googleCalendar.calendars.filter(isPublicHolidayCalendar);
 
           $scope.calendarSummaries = $scope.calendarsWithEvents.map(getCalendarSummary);
           $scope.calendarIds = $scope.calendarsWithEvents.map(getCalendarId);
@@ -133,15 +175,19 @@ angular.module('myApp.controllers', ['ngSanitize']).
         });
       }
 
-      $scope.showCalendarColor12 = function(calendarIndex, date) {
-        var weekDay = date.getDay();
-        var dateIndex = $scope.getDiffNumberOfDays($scope.currentStartDate, date);
+      $scope.showCalendarColor = function(calendarIndex, day) {
+        var weekDay = day.date.getDay();
+        var dateIndex = $scope.getDiffNumberOfDays($scope.currentStartDate, day.date);
         return $scope.dates[dateIndex].events[calendarIndex].length > 0 ? $scope.calendarsWithEvents[calendarIndex].color 
-        : (weekDay === 0 || weekDay === 6 ? '#E6E6E6' : '');
+        : (weekDay === 0 || weekDay === 6 || day.publicHoliday ? '#E6E6E6' : '');
       }
 
-      $scope.getDayBgColor = function(weekDay) {
-        return weekDay === 0 || weekDay === 6 ? '#E6E6E6' : '';
+      $scope.getDayBgColor = function(day) {
+        return day.date.getDay() === 0 || day.date.getDay() === 6 || day.publicHoliday ? '#E6E6E6' : '';
+      }
+
+      $scope.getDayFontColor = function(day) {
+        return day.date.getDay() === 0 || day.date.getDay() === 6 || day.publicHoliday ? 'red' : '';
       }
 
       $scope.getCalendarColor = function(calendarIndex) {
@@ -200,7 +246,11 @@ angular.module('myApp.controllers', ['ngSanitize']).
       }
 
       $scope.hasEvents = function () {  
-        return $scope.dates[$scope.getDiffNumberOfDays($scope.currentStartDate, $scope.selectedDate)].events[$scope.selectedCalendar.index].length > 0;     
+        var index = $scope.getDiffNumberOfDays($scope.currentStartDate, $scope.selectedDate);
+        if (index < 0 || index > $scope.pageSize) {
+          return false;
+        }
+        return $scope.dates[index].events[$scope.selectedCalendar.index].length > 0;
       }
 
       $scope.deleteEvent = function ( eventId, recurringEventId ) {  
