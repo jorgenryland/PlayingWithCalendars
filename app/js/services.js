@@ -64,7 +64,7 @@ angular.module('myApp.services', []).
         gapi.auth.authorize({ 
               client_id: '',
               scope: ["https://www.googleapis.com/auth/calendar"], 
-              immediate: true, 
+              immediate: false,
         }, getCalendars);
 
         return deferred.promise;
