@@ -10,6 +10,6 @@
     "protractor" : "~0.17.0"
   },
   "scripts": {
-    "start": "node web-server.js"
+    "start": "node scripts/web-server.js"
   }
 }
