@@ -11,11 +11,11 @@ angular.module('myApp', [
   'mgcrea.ngStrap'
 ]).
 config(['$routeProvider', function($routeProvider) {
-  $routeProvider.when('/view1', 
-  	{templateUrl: 'partials/partial2.html'});
-  $routeProvider.when('/view2', 
-  	{templateUrl: 'partials/partial1.html', controller: 'CalendarCtrl'});
-  $routeProvider.otherwise({redirectTo: '/view1'});
+  $routeProvider.when('/start', 
+  	{templateUrl: 'partials/start.html'});
+  $routeProvider.when('/calendar', 
+  	{templateUrl: 'partials/calendar.html', controller: 'CalendarCtrl'});
+  $routeProvider.otherwise({redirectTo: '/start'});
 }]);
 
 // Returns the ISO week of the date.
