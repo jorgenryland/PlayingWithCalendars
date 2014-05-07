@@ -7,7 +7,7 @@ describe('controllers', function(){
   beforeEach(module('myApp.services'));
 
   describe('CalendarCtrl', function(){
-    var scope, ctrl, q, GoogleCalendarServiceMock, getAllEventsDeferred;
+    var scope, modal, ctrl, q, GoogleCalendarServiceMock, getAllEventsDeferred;
 
     // define the mock service
     beforeEach(function() {
@@ -37,8 +37,9 @@ describe('controllers', function(){
 
     beforeEach(inject(function($rootScope, $q, $controller) {      
       scope = $rootScope.$new();
+      modal = null;
       q = $q;
-      ctrl = $controller('CalendarCtrl', {$scope: scope, googleCalendar : GoogleCalendarServiceMock});
+      ctrl = $controller('CalendarCtrl', {$scope: scope, googleCalendar : GoogleCalendarServiceMock, $modal : modal});
     }));
 
     it('should create "dates" with correct number of days', function() {

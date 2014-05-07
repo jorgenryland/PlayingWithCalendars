@@ -3,7 +3,7 @@
   <ul class="pager">
     <li class="previous"><a href="" ng-click="decrementMonth()">&larr; Forrige</a></li>
     <li class="next"><a href="" ng-click="incrementMonth()">Neste &rarr;</a></li>
-  </ul>
+  </ul> 
   <table class="table table-responsive table-bordered">
       <colgroup>
           <col ng-repeat="day in dates" span="1">
@@ -27,7 +27,7 @@
               </div>
             </div>
           </th>  
-           <td ng-click="setSelected($index, day.date)" ng-style="{background: showCalendarColor($index, day)}" ng-repeat="eventlist in day.events track by $index" data-animation="am-fade-and-slide-top" data-template="partials/create-event-modal.html" bs-modal="modal" >           
+           <td ng-click="setSelected($index, day.date)" ng-style="{background: showCalendarColor($index, day)}" ng-repeat="eventlist in day.events track by $index">           
             <div class="row" ng-repeat="event in eventlist track by $index">
               <div class="col-md-10">
                 <span>{{event.start.dateTime | eventStart}}{{event.end.dateTime | eventEnd}}{{event.summary}}</span>

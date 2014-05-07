@@ -3,7 +3,7 @@
 /* Controllers */
 
 angular.module('myApp.controllers', ['ngSanitize']).
-  controller('CalendarCtrl', ['$scope', 'googleCalendar', function ($scope, googleCalendar) {
+  controller('CalendarCtrl', ['$scope', 'googleCalendar', '$modal', function ($scope, googleCalendar, $modal) {
       var today = new Date(),               
       isFamilyCalendar = function(calendar) {
         // TODO: Lag regexp
@@ -118,7 +118,9 @@ angular.module('myApp.controllers', ['ngSanitize']).
         $scope.selectedEndTime = 25200000;
         $scope.fullDayOrTimeboxed = 0;
         $scope.recurrence = 0;  
-      };
+      },
+      // TODO: Fix mocking in tests.. 
+      modal = $modal ? $modal({scope: $scope, template: 'partials/create-event-modal.html', show: false}) : null;     
 
       setDefaultEventRegValues();
 
@@ -206,7 +208,8 @@ angular.module('myApp.controllers', ['ngSanitize']).
 
       $scope.setSelected = function ( calendarIndex, date ) {  
         $scope.selectedCalendar = { 'index' : calendarIndex, 'id' : $scope.calendarIds[calendarIndex], 'summary' : $scope.calendarSummaries[calendarIndex]};
-        $scope.selectedDate = date;      
+        $scope.selectedDate = date;
+        modal.$promise.then(modal.show);     
       }
 
       $scope.saveEvent = function () {
