@@ -262,5 +262,5 @@ angular.module('myApp.controllers', ['ngSanitize']).
           $scope.loadEvents();        
         });           
       }
-      //$scope.loadEvents();
+      $scope.loadEvents();
   }]);
