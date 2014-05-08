@@ -3,7 +3,7 @@
 /* Controllers */
 
 angular.module('myApp.controllers', ['ngSanitize']).
-  controller('CalendarCtrl', ['$scope', 'googleCalendar', '$modal', function ($scope, googleCalendar, $modal) {
+  controller('CalendarCtrl', ['$scope', 'googleCalendar', '$modal', '$timeout', function ($scope, googleCalendar, $modal, $timeout) {
       var today = new Date(),               
       isFamilyCalendar = function(calendar) {
         // TODO: Lag regexp
@@ -174,7 +174,8 @@ angular.module('myApp.controllers', ['ngSanitize']).
 
           $scope.calendarSummaries = $scope.calendarsWithEvents.map(getCalendarSummary);
           $scope.calendarIds = $scope.calendarsWithEvents.map(getCalendarId);
-          refreshDatesAndEventsMap();          
+          refreshDatesAndEventsMap();
+          $timeout($scope.loadEvents, 60000);        
         });
       }
 

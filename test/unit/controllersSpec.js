@@ -114,14 +114,14 @@ describe('controllers', function(){
     });
 
     it('should map a two day event over two dates', function () {
-        scope.currentStartDate = new Date(2019, 4, 12);
+        scope.currentStartDate = new Date(2019, 4, 15);
         scope.loadEvents();
 
         getAllEventsDeferred.resolve();
         scope.$root.$digest();
 
-        expect(scope.dates[8].events[0].length).toBe(1);   
-        expect(scope.dates[9].events[0].length).toBe(1);       
+        expect(scope.dates[5].events[0].length).toBe(1);   
+        expect(scope.dates[6].events[0].length).toBe(1);       
     });
 
    it('should display event splitted over two pages on second page', function () {
