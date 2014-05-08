@@ -167,6 +167,7 @@ angular.module('myApp.controllers', ['ngSanitize']).
       }
 
       $scope.loadEvents = function() {
+        $scope.loading = true;
         googleCalendar.loadData().then(function() {
           $scope.calendarsWithEvents = googleCalendar.calendars.filter(isFamilyCalendar);
           $scope.publicHolidaysCalendar = googleCalendar.calendars.filter(isPublicHolidayCalendar);
@@ -262,5 +263,5 @@ angular.module('myApp.controllers', ['ngSanitize']).
           $scope.loadEvents();        
         });           
       }
-      $scope.loadEvents();
+      //$scope.loadEvents();
   }]);

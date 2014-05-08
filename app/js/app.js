@@ -15,7 +15,7 @@ config(['$routeProvider', function($routeProvider) {
   	{templateUrl: 'partials/start.html'});
   $routeProvider.when('/calendar', 
   	{templateUrl: 'partials/calendar.html', controller: 'CalendarCtrl'});
-  $routeProvider.otherwise({redirectTo: '/start'});
+  $routeProvider.otherwise({redirectTo: '/calendar'});
 }]);
 
 // Returns the ISO week of the date.
