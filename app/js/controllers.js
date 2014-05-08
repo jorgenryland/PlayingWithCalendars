@@ -124,7 +124,7 @@ angular.module('myApp.controllers', ['ngSanitize']).
 
       setDefaultEventRegValues();
 
-      $scope.pageSize = 10;    
+      $scope.pageSize = 7;    
       $scope.currentStartDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
           
       $scope.numberOfDays = [
