@@ -6,6 +6,8 @@ angular.module('myApp.services', []).
   value('version', '0.1')
   .service("googleCalendar", function($q) {
      var calendars = [],
+     clientId = '',
+     scopes = ["https://www.googleapis.com/auth/calendar"], 
      getAllCalendarsAndEvents = function() {
         calendars.length = 0;
         var deferred = $q.defer(),
@@ -59,13 +61,19 @@ angular.module('myApp.services', []).
               });
             })(i);
           } 
+        },
+        checkAuth = function () {
+          gapi.auth.authorize({client_id: clientId, scope: scopes, immediate: true}, handleAuthResult);
+        },
+        handleAuthResult = function (authResult) {          
+          if (authResult && !authResult.error) {
+            getCalendars();
+          } else {
+            gapi.auth.authorize({client_id: clientId, scope: scopes, immediate: false}, getCalendars);
+          }
         };
-        // login to google API before making calls    
-        gapi.auth.authorize({ 
-              client_id: '',
-              scope: ["https://www.googleapis.com/auth/calendar"], 
-              immediate: false,
-        }, getCalendars);
+
+        checkAuth();
 
         return deferred.promise;
     },
