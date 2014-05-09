@@ -175,7 +175,7 @@ angular.module('myApp.controllers', ['ngSanitize']).
           $scope.calendarSummaries = $scope.calendarsWithEvents.map(getCalendarSummary);
           $scope.calendarIds = $scope.calendarsWithEvents.map(getCalendarId);
           refreshDatesAndEventsMap();
-          //$timeout($scope.loadEvents, 60000);        
+          $timeout($scope.loadEvents, 60000);        
         });
       }
 
