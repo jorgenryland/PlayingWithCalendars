@@ -166,9 +166,9 @@ angular.module('myApp.controllers', ['ngSanitize']).
         return days;
       }
 
-      $scope.loadEvents = function() {
+      $scope.loadEvents = function(initialRequest) {
         $scope.loading = true;
-        googleCalendar.loadData().then(function() {
+        googleCalendar.loadData(initialRequest).then(function() {
           $scope.calendarsWithEvents = googleCalendar.calendars.filter(isFamilyCalendar);
           $scope.publicHolidaysCalendar = googleCalendar.calendars.filter(isPublicHolidayCalendar);
 

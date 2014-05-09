@@ -8,7 +8,7 @@ angular.module('myApp.services', []).
      var calendars = [],
      clientId = '',
      scopes = ["https://www.googleapis.com/auth/calendar"], 
-     getAllCalendarsAndEvents = function() {
+     getAllCalendarsAndEvents = function(loginRequired) {
         calendars.length = 0;
         var deferred = $q.defer(),
         // get all calendars that the user has on Google Calendar
@@ -61,19 +61,14 @@ angular.module('myApp.services', []).
               });
             })(i);
           } 
-        },
-        checkAuth = function () {
-          gapi.auth.authorize({client_id: clientId, scope: scopes, immediate: true}, handleAuthResult);
-        },
-        handleAuthResult = function (authResult) {          
-          if (authResult && !authResult.error) {
-            getCalendars();
-          } else {
-            gapi.auth.authorize({client_id: clientId, scope: scopes, immediate: false}, getCalendars);
-          }
         };
 
-        checkAuth();
+        if(loginRequired) {
+          gapi.auth.authorize({client_id: clientId, scope: scopes, immediate: false}, getCalendars);
+        }
+        else {
+          getCalendars();
+        }
 
         return deferred.promise;
     },
