@@ -237,7 +237,7 @@ angular.module('myApp.controllers', ['ngSanitize']).
         }        
         recurrence = this.recurrence === 0 ? null : (this.recurrence === 1 ? 'weekly' : 'yearly');
         description = this.selectedIcon === 'nada' ? null : this.selectedIcon.slice(0);
-        this.selectedIcon = this.icons[0];
+        this.selectedIcon = this.icons[0].value;
         title = this.title.slice(0);
         this.title = null;
 
