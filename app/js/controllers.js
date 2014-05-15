@@ -214,6 +214,13 @@ angular.module('myApp.controllers', ['ngSanitize']).
         modal.$promise.then(modal.show);     
       }
 
+      $scope.startDateSort = function(event) {
+        if(!event.start.dateTime) {
+          return 0;
+        }
+        return new Date(event.start.dateTime).getTime();
+      }
+
       $scope.saveEvent = function () {
         var startTime, endTime, isFulldayEvent, title, recurrence, description;
         if (this.fullDayOrTimeboxed) {
