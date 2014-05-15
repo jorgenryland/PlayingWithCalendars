@@ -7,7 +7,10 @@
       </colgroup>
       <thead>
         <tr>
-          <td><h4>{{currentStartDate.getMonth() | nameOfMonth}} {{currentStartDate.getFullYear()}}</h4></td>
+          <td>
+            <h4>{{currentStartDate.getMonth() | nameOfMonth}} {{currentStartDate.getFullYear()}}</h4>
+            <span>{{lastPoll.toUTCString()}}</span>
+          </td>
           <th ng-repeat="summary in calendarSummaries">
             {{summary}}</th>
         </tr>
@@ -17,7 +20,7 @@
           <th ng-style="{background: getDayBgColor(day)}">
             <div class="row" ng-style="{color: getDayFontColor(day)}">
               <div class="col-md-10">
-                <span>{{day.date.getDate()}}. {{day.date.getDay() | nameOfDay}}   </span>
+                <span>{{day.date.getDate()}}. {{day.date.getDay() | nameOfDay}}   </span>          
               </div>
               <div class="col-md-2">
                 <span class="pull-right"><small>{{day | showDateMetaInfo}}</small></span>

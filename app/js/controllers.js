@@ -126,6 +126,7 @@ angular.module('myApp.controllers', ['ngSanitize']).
 
       $scope.pageSize = 7;    
       $scope.currentStartDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+      $scope.lastPoll = today;
           
       $scope.numberOfDays = [
         { value:1, label:'1'},
@@ -175,6 +176,7 @@ angular.module('myApp.controllers', ['ngSanitize']).
           $scope.calendarSummaries = $scope.calendarsWithEvents.map(getCalendarSummary);
           $scope.calendarIds = $scope.calendarsWithEvents.map(getCalendarId);
           refreshDatesAndEventsMap();
+          $scope.lastPoll = new Date();
           $timeout($scope.loadEvents, 60000);        
         });
       }
