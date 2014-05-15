@@ -223,6 +223,7 @@ angular.module('myApp.controllers', ['ngSanitize']).
       $scope.setSelected = function ( calendarIndex, date ) {  
         $scope.selectedCalendar = { 'index' : calendarIndex, 'id' : $scope.calendarIds[calendarIndex], 'summary' : $scope.calendarSummaries[calendarIndex]};
         $scope.selectedDate = date;
+        $scope.showRegisteredOrRegisterNew = $scope.hasEvents() ? 0 : 1;
         modal.$promise.then(modal.show);     
       }
 
@@ -274,7 +275,8 @@ angular.module('myApp.controllers', ['ngSanitize']).
         if (index < 0 || index > $scope.pageSize) {
           return false;
         }
-        return $scope.dates[index].events[$scope.selectedCalendar.index].length > 0;
+        var hasEvents = $scope.dates[index].events[$scope.selectedCalendar.index].length > 0;        
+        return hasEvents;
       }
 
       $scope.deleteEvent = function ( eventId, recurringEventId ) {  
