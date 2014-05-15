@@ -9,7 +9,8 @@
         <tr>
           <td>
             <h4>{{currentStartDate.getMonth() | nameOfMonth}} {{currentStartDate.getFullYear()}}</h4>
-            <span>{{lastPoll.toUTCString()}}</span>
+            <span>{{lastPoll.getHours()}}:{{lastPoll.getMinutes()}}:{{lastPoll.getSeconds()}}</span>
+            <div ng-show="lastError"><span>{{lastError}}</span></div>
           </td>
           <th ng-repeat="summary in calendarSummaries">
             {{summary}}</th>
@@ -48,7 +49,7 @@
 <div class="container" ng-show="!dates">
   <div class="row" ng-show="!loading">   
     <p class="text-center">
-      <a href="#/calendar"><button class="btn btn-success btn-lg" ng-click="loadEvents(true)">Last inn kalender</button></a>
+      <a href="#/calendar"><button class="btn btn-success btn-lg" ng-click="loadEvents(true, false)">Last inn kalender</button></a>
     </p>    
   </div><!-- //row -->
   <div class="row" ng-show="loading">

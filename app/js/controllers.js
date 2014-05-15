@@ -3,8 +3,9 @@
 /* Controllers */
 
 angular.module('myApp.controllers', ['ngSanitize']).
-  controller('CalendarCtrl', ['$scope', 'googleCalendar', '$modal', '$timeout', function ($scope, googleCalendar, $modal, $timeout) {
-      var today = new Date(),               
+  controller('CalendarCtrl', ['$scope', 'googleCalendar', '$modal', '$timeout', '$window', function ($scope, googleCalendar, $modal, $timeout, $window) {
+      var today = new Date(),
+      pollRetry = false,               
       isFamilyCalendar = function(calendar) {
         // TODO: Lag regexp
         if (calendar.summary ===  'Jørgen Ryland' || calendar.summary === 'Kontakters fødselsdager og aktiviteter' ||
@@ -167,9 +168,10 @@ angular.module('myApp.controllers', ['ngSanitize']).
         return days;
       }
 
-      $scope.loadEvents = function(initialRequest) {
+      $scope.loadEvents = function(login, refresh) {
         $scope.loading = true;
-        googleCalendar.loadData(initialRequest).then(function() {
+        googleCalendar.loadData(login, refresh).then(function() {
+          pollRetry = false;
           $scope.calendarsWithEvents = googleCalendar.calendars.filter(isFamilyCalendar);
           $scope.publicHolidaysCalendar = googleCalendar.calendars.filter(isPublicHolidayCalendar);
 
@@ -178,6 +180,14 @@ angular.module('myApp.controllers', ['ngSanitize']).
           refreshDatesAndEventsMap();
           $scope.lastPoll = new Date();
           $timeout($scope.loadEvents, 60000);        
+        },
+        function(error) {
+          console.log('Error: ' + error.message);
+          $scope.lastError = error.message;
+          if(!pollRetry) {
+            pollRetry = true;
+            $scope.loadEvents(true, true);
+          }
         });
       }
 
@@ -273,5 +283,6 @@ angular.module('myApp.controllers', ['ngSanitize']).
           $scope.loadEvents();        
         });           
       }
+
       //$scope.loadEvents();
   }]);
