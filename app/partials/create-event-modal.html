@@ -24,6 +24,10 @@
 						      Action <span class="caret"></span>
 						    </button>
 						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-2"><label class="control-label">Huskeliste</label></div>
+						<div class="col-md-10"><input type="text" ng-model="checklist" name="Huskeliste"/></div>
 					</div>				
 					<br>
 					<div class="row" ng-show="!fullDayOrTimeboxed">
@@ -69,10 +73,24 @@
 					<br>			
 					<div class="row" ng-repeat="event in dates[getDiffNumberOfDays(currentStartDate, selectedDate)].events[selectedCalendar.index]">
 						<div class="col-md-1">
-							<span ng-click="deleteEvent(event.id, event.recurringEventId)" class="glyphicon glyphicon-remove-circle"></span>
-						</div>
-						<div class="col-md-11">
+							<span><i class={{parsedDescription(event.description).ikon}}></i></span>
+						</div>						
+						<div class="col-md-8">
 							<p> {{event.start.dateTime | eventStart}}{{event.end.dateTime | eventEnd}}{{event.summary}}</p>
+							<div class="panel panel-default" ng-show="activePosition == $index">
+							  <div class="panel-body">
+							    {{parsedDescription(event.description).huskeliste}}
+							  </div>
+							</div>
+						</div>
+						<div class="col-md-1">
+							<span ng-click="toggleshowEventDetail($index)" class="glyphicon glyphicon-zoom-in"></span>
+						</div>
+						<div class="col-md-1">
+							<span ng-click="$window.alert('Ikkje implementert endå...')" class="glyphicon glyphicon-pencil"></span>
+						</div>
+						<div class="col-md-1">
+							<span ng-click="deleteEvent(event.id, event.recurringEventId)" class="glyphicon glyphicon-remove"></span>
 						</div>
 					</div>
 				</div>

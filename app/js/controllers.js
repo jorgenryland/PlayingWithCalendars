@@ -198,6 +198,21 @@ angular.module('myApp.controllers', ['ngSanitize']).
         : (weekDay === 0 || weekDay === 6 || day.publicHoliday ? '#E6E6E6' : '');
       }
 
+      $scope.parsedDescription = function(description) {
+        try{
+          var parsedDescription = JSON.parse(description);
+          if(parsedDescription) {
+            return parsedDescription;
+          }          
+        }catch(err){
+          console.log('Failed to JSON parse ' + description + ', error: ' + err);
+        }
+        if (description) {
+          return {'ikon' : description};
+        }
+        return {'ikon':'','huskeliste':''};      
+      }
+
       $scope.getDayBgColor = function(day) {
         return day.date.getDay() === 0 || day.date.getDay() === 6 || day.publicHoliday ? '#E6E6E6' : '';
       }
@@ -224,6 +239,7 @@ angular.module('myApp.controllers', ['ngSanitize']).
         $scope.selectedCalendar = { 'index' : calendarIndex, 'id' : $scope.calendarIds[calendarIndex], 'summary' : $scope.calendarSummaries[calendarIndex]};
         $scope.selectedDate = date;
         $scope.showRegisteredOrRegisterNew = $scope.hasEvents() ? 0 : 1;
+        $scope.activePosition = -1;
         modal.$promise.then(modal.show);     
       }
 
@@ -232,6 +248,10 @@ angular.module('myApp.controllers', ['ngSanitize']).
           return 0;
         }
         return new Date(event.start.dateTime).getTime();
+      }
+
+      $scope.toggleshowEventDetail = function($index) {        
+        $scope.activePosition = $scope.activePosition == $index ? -1 : $index;
       }
 
       $scope.saveEvent = function () {
@@ -256,7 +276,12 @@ angular.module('myApp.controllers', ['ngSanitize']).
           isFulldayEvent = true;
         }        
         recurrence = this.recurrence === 0 ? null : (this.recurrence === 1 ? 'weekly' : 'yearly');
-        description = this.selectedIcon === 'nada' ? null : this.selectedIcon.slice(0);
+        description = {
+          ikon: (this.selectedIcon === 'nada' ? '' : this.selectedIcon.slice(0)),
+          huskeliste: (this.checklist ? this.checklist.slice(0) : '')
+        };
+
+        this.checklist = null;
         this.selectedIcon = this.icons[0].value;
         title = this.title.slice(0);
         this.title = null;
@@ -265,7 +290,7 @@ angular.module('myApp.controllers', ['ngSanitize']).
         this.fullDayOrTimeboxed = this.recurrence = 0;
         this.$hide();
 
-        googleCalendar.saveEvent($scope.selectedCalendar.id, startTime, endTime, title, isFulldayEvent, recurrence, description).then(function() {
+        googleCalendar.saveEvent($scope.selectedCalendar.id, startTime, endTime, title, isFulldayEvent, recurrence, JSON.stringify(description)).then(function() {
           $scope.loadEvents();        
         });      
       }

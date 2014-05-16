@@ -34,7 +34,7 @@
                 <span>{{event.start.dateTime | eventStart}}{{event.end.dateTime | eventEnd}}{{event.summary}}</span>
               </div>
               <div class="col-md-2">
-                <span class="pull-right"><i class={{event.description}}></i></span>
+                <span class="pull-right"><i class={{parsedDescription(event.description).ikon}}></i></span>
               </div>
             </div>
           </td>
