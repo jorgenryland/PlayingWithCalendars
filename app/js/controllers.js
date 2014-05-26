@@ -172,13 +172,19 @@ angular.module('myApp.controllers', ['ngSanitize']).
         $scope.loading = true;
         googleCalendar.loadData(login, refresh).then(function() {
           pollRetry = false;
+          var today = new Date();          
+          if ($scope.lastPoll.getDate() !== today.getDate()) {
+            $scope.currentStartDate = today;
+          }          
+          $scope.lastPoll = today;
+          
           $scope.calendarsWithEvents = googleCalendar.calendars.filter(isFamilyCalendar);
           $scope.publicHolidaysCalendar = googleCalendar.calendars.filter(isPublicHolidayCalendar);
 
           $scope.calendarSummaries = $scope.calendarsWithEvents.map(getCalendarSummary);
           $scope.calendarIds = $scope.calendarsWithEvents.map(getCalendarId);
           refreshDatesAndEventsMap();
-          $scope.lastPoll = new Date();
+                    
           $timeout($scope.loadEvents, 60000);        
         },
         function(error) {
