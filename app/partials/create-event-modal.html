@@ -17,24 +17,24 @@
 				<div ng-show="showRegisteredOrRegisterNew">	
 					<br>									
 					<div class="row">
-						<div class="col-md-2"><label class="control-label">Kva skjer</label></div>
-						<div class="col-md-4"><input type="text" ng-model="title" name="Tittel"/></div>
-						<div class="col-md-6">
+						<div class="col-xs-2 col-md-2"><label class="control-label">Kva skjer</label></div>
+						<div class="col-xs-6 col-md-4"><input type="text" ng-model="title" name="Tittel"/></div>
+						<div class="col-xs-4 col-md-6">
 							<button type="button" class="btn btn-default" ng-model="selectedIcon" data-html="1" placeholder="Velg ikon" ng-options="icon.value as icon.label for icon in icons" bs-select>      						
 						      Action <span class="caret"></span>
 						    </button>
 						</div>
 					</div>
 					<div class="row">
-						<div class="col-md-2"><label class="control-label">Huskeliste</label></div>
-						<div class="col-md-10"><input type="text" ng-model="checklist" name="Huskeliste"/></div>
+						<div class="col-xs-2 col-md-2"><label class="control-label">Huskeliste</label></div>
+						<div class="col-xs-10 col-md-10"><input type="text" ng-model="checklist" name="Huskeliste"/></div>
 					</div>				
 					<br>
 					<div class="row" ng-show="!fullDayOrTimeboxed">
-						<div class="col-md-2">
+						<div class="col-xs-2 col-md-2">
 							<label>Dagar:&nbsp;</label>
 						</div>
-						<div class="col-md-10">
+						<div class="col-xs-10 col-md-10">
 							<select ng-model="selectedNumberOfDays" ng-options="day.label for day in numberOfDays"></select>					
 						</div>			
 					</div>
@@ -54,13 +54,13 @@
 					</div>
 					<br>
 					<div class="row">
-						<div class="col-md-6">
+						<div class="col-xs-6 col-md-6">
 							<div class="btn-group" ng-model="fullDayOrTimeboxed" bs-radio-group>
 							  <label class="btn btn-default"><input type="radio" class="btn btn-default" value="0"> Heildag  </label>
 							  <label class="btn btn-default"><input type="radio" class="btn btn-default" value="1"> Tidspunkt</label>
 						  	</div>
 						</div>
-						<div class="col-md-6">
+						<div class="col-xs-6 col-md-6">
 							<div class="btn-group" ng-model="recurrence" bs-radio-group>
 							  <label class="btn btn-default"><input type="radio" class="btn btn-default" value="0"> Engongs  </label>
 							  <label class="btn btn-default"><input type="radio" class="btn btn-default" value="1"> Vekentleg</label>
@@ -72,10 +72,10 @@
 				<div ng-show="!showRegisteredOrRegisterNew">	
 					<br>			
 					<div class="row" ng-repeat="event in dates[getDiffNumberOfDays(currentStartDate, selectedDate)].events[selectedCalendar.index]">
-						<div class="col-md-1">
+						<div class="col-xs-1 col-md-1">
 							<span><i class={{parsedDescription(event.description).ikon}}></i></span>
 						</div>						
-						<div class="col-md-8">
+						<div class="col-xs-8 col-md-8">
 							<p> {{event.start.dateTime | eventStart}}{{event.end.dateTime | eventEnd}}{{event.summary}}</p>
 							<div class="panel panel-default" ng-show="activePosition == $index">
 							  <div class="panel-body">
@@ -83,13 +83,13 @@
 							  </div>
 							</div>
 						</div>
-						<div class="col-md-1">
+						<div class="col-xs-1 col-md-1">
 							<span ng-click="toggleshowEventDetail($index)" class="glyphicon glyphicon-zoom-in"></span>
 						</div>
-						<div class="col-md-1">
+						<div class="col-xs-1 col-md-1">
 							<span ng-click="$window.alert('Ikkje implementert endå...')" class="glyphicon glyphicon-pencil"></span>
 						</div>
-						<div class="col-md-1">
+						<div class="col-xs-1 col-md-1">
 							<span ng-click="deleteEvent(event.id, event.recurringEventId)" class="glyphicon glyphicon-remove"></span>
 						</div>
 					</div>
