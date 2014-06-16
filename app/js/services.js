@@ -117,6 +117,22 @@ angular.module('myApp.services', []).
       });
       return deferred.promise;
     },
+    updateEvent = function(calendarId, event) {
+      var deferred = $q.defer();
+      
+      gapi.client.load('calendar','v3', function() {
+        var request = gapi.client.calendar.events.update({
+          'calendarId': calendarId,
+          'eventId': event.id,
+          'resource': event
+        });
+        request.execute(function(resp) {
+          deferred.resolve();
+          console.log(resp);
+        });       
+      });
+      return deferred.promise;
+    },
     deleteEvent = function(calendarId, eventId) {
       var deferred = $q.defer();
       
@@ -136,6 +152,7 @@ angular.module('myApp.services', []).
     return {
       loadData : getAllCalendarsAndEvents,
       saveEvent : saveEvent,
+      updateEvent : updateEvent,
       deleteEvent : deleteEvent,
       calendars : calendars
     };

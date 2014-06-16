@@ -76,22 +76,61 @@
 							<span><i class={{parsedDescription(event.description).ikon}}></i></span>
 						</div>						
 						<div class="col-xs-8 col-md-8">
-							<p> {{event.start.dateTime | eventStart}}{{event.end.dateTime | eventEnd}}{{event.summary}}</p>
-							<div class="panel panel-default" ng-show="activePosition == $index">
-							  <div class="panel-body">
-							    {{parsedDescription(event.description).huskeliste}}
-							  </div>
-							</div>
+							<p> {{event.start.dateTime | eventStart}}{{event.end.dateTime | eventEnd}}{{event.summary}}</p>							
 						</div>
 						<div class="col-xs-1 col-md-1">
 							<span ng-click="toggleshowEventDetail($index)" class="glyphicon glyphicon-zoom-in"></span>
 						</div>
 						<div class="col-xs-1 col-md-1">
-							<span ng-click="$window.alert('Ikkje implementert endå...')" class="glyphicon glyphicon-pencil"></span>
+							<span ng-click="toggleEditEvent($index, event)" class="glyphicon glyphicon-pencil"></span>
 						</div>
 						<div class="col-xs-1 col-md-1">
 							<span ng-click="deleteEvent(event.id, event.recurringEventId)" class="glyphicon glyphicon-remove"></span>
 						</div>
+						<div class="col-xs-12 col-md-12 panel panel-default" ng-show="showEventDetails == $index">
+							  <div class="panel-body">
+							    {{parsedDescription(event.description).huskeliste}}
+							  </div>
+							</div>
+						<div class="col-xs-12 col-md-12 panel panel-default" ng-show="editEvent == $index">
+							<div class="row">
+								<div class="col-xs-2 col-md-2"><label class="control-label">Kva skjer</label></div>
+								<div class="col-xs-6 col-md-4"><input type="text" ng-model="updateEvent.title" name="Tittel"/>
+								</div>
+								<div class="col-xs-4 col-md-6">
+									<button type="button" class="btn btn-default" ng-model="updateEvent.icon" data-html="1" placeholder="Velg ikon" ng-options="icon.value as icon.label for icon in icons" bs-select>      						
+								      Action <span class="caret"></span>
+								    </button>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-xs-2 col-md-2"><label class="control-label">Huskeliste</label></div>
+								<div class="col-xs-10 col-md-10"><input type="text" ng-model="updateEvent.checklist" name="Huskeliste"/></div>
+							</div>				
+							<br>
+							<div class="row" ng-show="!event.start.dateTime">
+								<div class="col-xs-2 col-md-2">
+									<label>Dagar:&nbsp;</label>
+								</div>
+								<div class="col-xs-10 col-md-10">
+									<select ng-model="editedNumberOfDays" ng-options="day.label for day in numberOfDays"></select>					
+								</div>			
+							</div>
+							<div class="row" ng-show="event.start.dateTime">
+								<div class="col-md-2">
+									<label class="control-label"><span class="glyphicon glyphicon-time"></span> Start</label>
+								</div>
+								<div class="col-md-4">
+									<input type="text" size="4" ng-model="editedStartTime" data-time-format="HH:mm" data-time-type="number" data-min-time="00:00" data-max-time="23:59" data-autoclose="1" name="time2" bs-timepicker>
+								</div>							
+								<div class="col-md-2">
+									<label class="control-label"><span class="glyphicon glyphicon-time"></span> Slutt</label>
+								</div>
+								<div class="col-md-4">
+									<input type="text" size="4" ng-model="editedEndTime" data-time-format="HH:mm" data-time-type="number" data-min-time="00:00" data-max-time="23:59" data-autoclose="1" name="time2" bs-timepicker>
+								</div>
+							</div>
+						</div>						
 					</div>
 				</div>
 			</div>

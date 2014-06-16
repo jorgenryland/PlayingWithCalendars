@@ -120,6 +120,35 @@ angular.module('myApp.controllers', ['ngSanitize']).
         $scope.fullDayOrTimeboxed = 0;
         $scope.recurrence = 0;  
       },
+      //saveEvent = function() {
+
+      //},
+      updateEvent = function() {
+        var updatedEvent = eventHasChanged();
+        if (updatedEvent) {
+          googleCalendar.updateEvent($scope.selectedCalendar.id, updatedEvent).then(function() {
+            $scope.loadEvents();        
+          });
+        }
+      },
+      eventHasChanged = function(updatedEvent) {
+        var updatedEvent = $scope.eventToEdit,
+        eventHasChanged = false;
+        if (updatedEvent.summary !== $scope.updateEvent.title) {
+          updatedEvent.summary = $scope.updateEvent.title;
+          eventHasChanged = true;
+        }
+        var description = JSON.stringify({
+          ikon: ($scope.updateEvent.icon === 'nada' ? '' : $scope.updateEvent.icon.slice(0)),
+          huskeliste: ($scope.updateEvent.checklist ? $scope.updateEvent.checklist.slice(0) : '')
+        });
+        if (updatedEvent.description !== description) {
+          updatedEvent.description = description;
+          eventHasChanged = true;          
+        }        
+
+        return eventHasChanged ? updatedEvent : false;
+      },
       // TODO: Fix mocking in tests.. 
       modal = $modal ? $modal({scope: $scope, template: 'partials/create-event-modal.html', show: false}) : null;     
 
@@ -245,7 +274,8 @@ angular.module('myApp.controllers', ['ngSanitize']).
         $scope.selectedCalendar = { 'index' : calendarIndex, 'id' : $scope.calendarIds[calendarIndex], 'summary' : $scope.calendarSummaries[calendarIndex]};
         $scope.selectedDate = date;
         $scope.showRegisteredOrRegisterNew = $scope.hasEvents() ? 0 : 1;
-        $scope.activePosition = -1;
+        $scope.showEventDetails = -1;
+        $scope.editEvent = -1;
         modal.$promise.then(modal.show);     
       }
 
@@ -257,11 +287,31 @@ angular.module('myApp.controllers', ['ngSanitize']).
       }
 
       $scope.toggleshowEventDetail = function($index) {        
-        $scope.activePosition = $scope.activePosition == $index ? -1 : $index;
+        $scope.showEventDetails = $scope.showEventDetails == $index ? -1 : $index;
+        $scope.editEvent = -1;
+      }
+
+      $scope.toggleEditEvent = function($index, selectedEvent) {        
+        $scope.editEvent = $scope.editEvent == $index ? -1 : $index;
+        $scope.showEventDetails = -1;
+
+        $scope.eventToEdit = selectedEvent;
+        $scope.updateEvent = {};        
+        $scope.updateEvent.title = selectedEvent.summary.slice(0);
+        var parsedDescription = $scope.parsedDescription(selectedEvent.description);
+        $scope.updateEvent.checklist = parsedDescription.huskeliste;
+        $scope.updateEvent.icon = parsedDescription.ikon;
       }
 
       $scope.saveEvent = function () {
         var startTime, endTime, isFulldayEvent, title, recurrence, description;
+
+        if (!this.showRegisteredOrRegisterNew && this.editEvent !== -1) {          
+          updateEvent();
+          this.$hide();
+          return;
+        }
+
         if (this.fullDayOrTimeboxed) {
           startTime = new Date(this.selectedStartTime);
           endTime = new Date(this.selectedEndTime);
@@ -298,7 +348,7 @@ angular.module('myApp.controllers', ['ngSanitize']).
 
         googleCalendar.saveEvent($scope.selectedCalendar.id, startTime, endTime, title, isFulldayEvent, recurrence, JSON.stringify(description)).then(function() {
           $scope.loadEvents();        
-        });      
+        }); 
       }
 
       $scope.hasEvents = function () {  
