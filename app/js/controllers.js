@@ -301,6 +301,10 @@ angular.module('myApp.controllers', ['ngSanitize']).
         var parsedDescription = $scope.parsedDescription(selectedEvent.description);
         $scope.updateEvent.checklist = parsedDescription.huskeliste;
         $scope.updateEvent.icon = parsedDescription.ikon;
+        if (selectedEvent.start.date) {
+          var diffDays = $scope.getDiffNumberOfDays(new Date(selectedEvent.start.date), new Date(selectedEvent.end.date));
+          $scope.updateEvent.numberOfDays = $scope.numberOfDays[diffDays - 1];
+        }
       }
 
       $scope.saveEvent = function () {
