@@ -4,9 +4,9 @@
 
 angular.module('myApp.services', []).
   value('version', '0.1')
-  .service("googleCalendar", function($q) {
+  .service("googleCalendar", ['CONFIG','$q', function(CONFIG, $q) {
      var calendars = [],
-     clientId = '',
+     clientId = CONFIG.clientId,
      scopes = ["https://www.googleapis.com/auth/calendar"], 
      getAllCalendarsAndEvents = function(loginRequired, immediate) {
         calendars.length = 0;
@@ -15,7 +15,7 @@ angular.module('myApp.services', []).
         getCalendars = function() {          
           gapi.client.load('calendar','v3', function() {
               var request = gapi.client.calendar.calendarList.list({});
-              request.B.apiVersion = "v3";
+              //request.B.apiVersion = "v3";
               request.execute(function(resp) {
                   if(!resp.error) {
                     //var calendars = [];
@@ -40,7 +40,7 @@ angular.module('myApp.services', []).
                 calendarId: calendars[i].id,
                 singleEvents: true
               });
-              request.B.apiVersion = "v3";
+              //request.B.apiVersion = "v3";
               request.execute(function(resp) {
                   numberOfMissingResponses--;
                   var calendarIndex = 0;
@@ -156,4 +156,4 @@ angular.module('myApp.services', []).
       deleteEvent : deleteEvent,
       calendars : calendars
     };
- });
+ }]);

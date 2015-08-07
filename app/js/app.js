@@ -8,6 +8,7 @@ angular.module('myApp', [
   'myApp.services',
   'myApp.directives',
   'myApp.controllers',
+  'myApp.config',
   'mgcrea.ngStrap'
 ]).
 config(['$routeProvider', function($routeProvider) {
